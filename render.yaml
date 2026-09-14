@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: delta-cloud-scanner-v4
+    runtime: python
+
+    buildCommand: pip install -r requirements.txt
+
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+
+    healthCheckPath: /api/health
+
+    envVars:
+      - key: DELTA_BASE_URL
+        value: https://api.india.delta.exchange
+
+      - key: DELTA_WS_URL
+        value: wss://public-socket.india.delta.exchange
+
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+
+      - key: TELEGRAM_CHAT_ID
+        sync: false
+
+      - key: SCAN_INTERVAL_SECONDS
+        value: "60"
+
+      - key: SCAN_BATCH_SIZE
+        value: "6"
+
+      - key: CANDLE_COUNT
+        value: "120"
+
+      - key: HTTP_TIMEOUT_SECONDS
+        value: "20"
+
+      # V4: browser WebSocket broadcast throttle. Delta upstream remains live.
+      - key: WS_BROADCAST_SECONDS
+        value: "5"

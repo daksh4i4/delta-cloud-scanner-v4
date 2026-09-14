@@ -30,6 +30,9 @@ let searchText = "";
 let latestData = null;
 let socket = null;
 let reconnectTimer = null;
+let telegramEnabled = false;
+let telegramConfigured = false;
+let telegramBusy = false;
 
 
 /* ============================================================
@@ -160,6 +163,8 @@ for (const d of defs) {
    ============================================================ */
 
 function applyProfessionalUI() {
+    if (!document.getElementById("telegramControlStyle")) { const st=document.createElement("style"); st.id="telegramControlStyle"; st.textContent=`.telegram-control{margin:14px 0 18px;padding:16px 18px;border:1px solid #dfe5ee;border-radius:14px;background:#fff;box-shadow:0 4px 14px rgba(20,40,80,.06)}.telegram-control-title{font-size:16px;font-weight:700;margin-bottom:10px}.telegram-control-row{display:flex;align-items:center;justify-content:space-between;gap:16px}.telegram-status{font-size:13px;line-height:1.5;padding:8px 10px;border-radius:9px}.telegram-status.on{background:#ecfdf3;color:#087443}.telegram-status.off{background:#f3f4f6;color:#596273}.telegram-status.error{background:#fff1f2;color:#b42318}.telegram-toggle{min-width:115px;border:0;border-radius:10px;padding:10px 15px;font-weight:700;cursor:pointer}.telegram-toggle.on{background:#dcfce7;color:#166534}.telegram-toggle.off{background:#e5e7eb;color:#374151}.telegram-toggle.error{background:#fee2e2;color:#991b1b}.telegram-toggle:disabled{opacity:.6;cursor:wait}@media(max-width:700px){.telegram-control-row{align-items:stretch;flex-direction:column}.telegram-toggle{width:100%}}`;document.head.appendChild(st); }
+
 
   if (document.getElementById(
     "professional-scanner-ui"
@@ -1537,7 +1542,31 @@ function renderLatest() {
    MAIN RENDER
    ============================================================ */
 
+function ensureTelegramControl() {
+    if (document.getElementById("telegramControl")) return;
+    const settings = document.getElementById("settings");
+    if (!settings) return;
+    const box = document.createElement("div");
+    box.id = "telegramControl"; box.className = "telegram-control";
+    box.innerHTML = `<div class="telegram-control-title">📲 Telegram Alerts</div><div class="telegram-control-row"><div id="telegramStatus" class="telegram-status off">Alerts are OFF. Scanner continues normally without Telegram alerts.</div><button id="telegramToggle" class="telegram-toggle off" type="button">⚪ OFF</button></div>`;
+    settings.parentNode.insertBefore(box, settings.nextSibling);
+    document.getElementById("telegramToggle").addEventListener("click", toggleTelegram);
+    updateTelegramUI(telegramEnabled, telegramConfigured);
+}
+function updateTelegramUI(enabled, configured = telegramConfigured, error = "") {
+    telegramEnabled = !!enabled; telegramConfigured = !!configured;
+    const button=document.getElementById("telegramToggle"), status=document.getElementById("telegramStatus"); if(!button||!status)return;
+    button.classList.remove("on","off","error"); status.classList.remove("on","off","error");
+    if(!telegramConfigured){button.classList.add("error");status.classList.add("error");button.textContent="⚠ NOT CONFIGURED";status.textContent=error||"Telegram is not configured. Add TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in Render.";return;}
+    if(telegramEnabled){button.classList.add("on");status.classList.add("on");button.textContent="🟢 ON";status.textContent="Alerts are ENABLED. BUY/SELL signals may be sent to Telegram.";}else{button.classList.add("off");status.classList.add("off");button.textContent="⚪ OFF";status.textContent="Alerts are OFF. Scanner continues normally without Telegram alerts.";}
+    button.disabled=telegramBusy;
+}
+async function loadTelegramStatus(){try{const r=await fetch("/api/telegram");const d=await r.json();updateTelegramUI(d.enabled,d.configured,d.error||"");}catch(e){updateTelegramUI(false,false,"Could not read Telegram status. Check the backend connection.");}}
+async function toggleTelegram(){if(telegramBusy||!telegramConfigured)return; telegramBusy=true; updateTelegramUI(telegramEnabled,telegramConfigured); try{const next=!telegramEnabled;const r=await fetch("/api/telegram/toggle",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({enabled:next})});const d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"Telegram toggle failed");updateTelegramUI(d.enabled,d.configured,d.error||"");}catch(e){updateTelegramUI(telegramEnabled,telegramConfigured,e.message);}finally{telegramBusy=false;updateTelegramUI(telegramEnabled,telegramConfigured);}}
+
 function render(j) {
+    ensureTelegramControl();
+    if (j && j.status && typeof j.status.telegram_enabled === "boolean") updateTelegramUI(j.status.telegram_enabled, telegramConfigured);
 
   if (!j) {
     return;
@@ -1946,6 +1975,8 @@ function render(j) {
    ============================================================ */
 
 async function loadInitial() {
+    ensureTelegramControl();
+    await loadTelegramStatus();
 
   try {
 

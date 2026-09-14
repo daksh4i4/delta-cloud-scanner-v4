@@ -32,6 +32,13 @@ WS_URL = os.getenv(
 TG = os.getenv("TELEGRAM_BOT_TOKEN", "")
 CHAT = os.getenv("TELEGRAM_CHAT_ID", "")
 
+# Telegram alerts are OFF by default. Set TELEGRAM_ENABLED=true in Render when needed.
+TELEGRAM_ENABLED = os.getenv("TELEGRAM_ENABLED", "false").strip().lower() in {
+    "1", "true", "yes", "on"
+}
+
+print("Telegram alerts:", "ENABLED" if TELEGRAM_ENABLED else "DISABLED")
+
 # Telegram alert protection:
 # - Multiple DIFFERENT coins/signals can be sent in the same scan.
 # - The same coin + same signal is not sent repeatedly.
@@ -1180,6 +1187,10 @@ async def load_markets():
 
 async def telegram(message):
 
+    if not TELEGRAM_ENABLED:
+
+        return
+
     if not TG or not CHAT:
 
         return
@@ -2235,6 +2246,11 @@ async def send_signal(
     symbol,
     result
 ):
+
+    # Telegram is optional and disabled by default.
+    if not TELEGRAM_ENABLED:
+
+        return False
 
     sig = result.get("signal")
 

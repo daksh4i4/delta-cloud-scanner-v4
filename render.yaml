@@ -37,3 +37,4 @@ services:
       # V4: browser WebSocket broadcast throttle. Delta upstream remains live.
       - key: WS_BROADCAST_SECONDS
         value: "5"
+

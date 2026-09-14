@@ -1,29 +1,12 @@
 /* ============================================================
-   DELTA CLOUD SCANNER V3
+   DELTA CLOUD SCANNER V4
    FINAL PROFESSIONAL FRONTEND
    ------------------------------------------------------------
-   IMPORTANT:
-   This file DOES NOT change scanner calculations.
-   It only handles:
-   - Settings
-   - Rendering
-   - Search
-   - BUY / SELL / NEUTRAL filters
-   - WebSocket updates
-   - UI formatting
-   ============================================================ */
-
-
-/* ============================================================
-   BASIC HELPERS
+   LIGHT PROFESSIONAL UI
+   Scanner calculations are NOT changed.
    ============================================================ */
 
 const $ = id => document.getElementById(id);
-
-
-/* ============================================================
-   GLOBAL FILTER STATE
-   ============================================================ */
 
 let activeFilter = "ALL";
 let searchText = "";
@@ -37,73 +20,62 @@ let reconnectTimer = null;
    ============================================================ */
 
 const TF = [
-  "1m",
-  "3m",
-  "5m",
-  "15m",
-  "30m",
-  "1h",
-  "2h",
-  "4h",
-  "6h",
-  "12h",
-  "1d",
-  "1w",
-  "1M"
+  "1m","3m","5m","15m","30m","1h","2h",
+  "4h","6h","12h","1d","1w","1M"
 ];
 
 
 /* ============================================================
-   SETTINGS DEFINITIONS
+   SETTINGS
    ============================================================ */
 
 const defs = [
 
-  ["wave_tf", "Wave TF", "select"],
-  ["tide_tf", "Tide TF", "select"],
+  ["wave_tf","Wave TF","select"],
+  ["tide_tf","Tide TF","select"],
 
-  ["we1", "Wave EMA 1", "number"],
-  ["we2", "Wave EMA 2", "number"],
-  ["we3", "Wave EMA 3", "number"],
+  ["we1","Wave EMA 1","number"],
+  ["we2","Wave EMA 2","number"],
+  ["we3","Wave EMA 3","number"],
 
-  ["te1", "Tide EMA 1", "number"],
-  ["te2", "Tide EMA 2", "number"],
-  ["te3", "Tide EMA 3", "number"],
+  ["te1","Tide EMA 1","number"],
+  ["te2","Tide EMA 2","number"],
+  ["te3","Tide EMA 3","number"],
 
-  ["fe1", "Tide Filter EMA 1", "number"],
-  ["fe2", "Tide Filter EMA 2", "number"],
+  ["fe1","Tide Filter EMA 1","number"],
+  ["fe2","Tide Filter EMA 2","number"],
 
-  ["rp", "RSI Period", "number"],
-  ["rb", "RSI BUY", "number"],
-  ["rs", "RSI SELL", "number"],
+  ["rp","RSI Period","number"],
+  ["rb","RSI BUY","number"],
+  ["rs","RSI SELL","number"],
 
-  ["mf", "MACD Fast", "number"],
-  ["ms", "MACD Slow", "number"],
-  ["mg", "MACD Signal", "number"],
+  ["mf","MACD Fast","number"],
+  ["ms","MACD Slow","number"],
+  ["mg","MACD Signal","number"],
 
-  ["sp", "Stoch Period", "number"],
-  ["sk", "Stoch K Smooth", "number"],
-  ["sd", "Stoch D Smooth", "number"],
+  ["sp","Stoch Period","number"],
+  ["sk","Stoch K Smooth","number"],
+  ["sd","Stoch D Smooth","number"],
 
-  ["vs", "Volume SMA", "number"],
+  ["vs","Volume SMA","number"],
 
-  ["bs", "BUY Score", "number"],
-  ["ss", "SELL Score", "number"],
+  ["bs","BUY Score","number"],
+  ["ss","SELL Score","number"],
 
-  ["srl", "S/R Lookback", "number"],
-  ["srp", "S/R Pivot", "number"],
+  ["srl","S/R Lookback","number"],
+  ["srp","S/R Pivot","number"],
 
-  ["rr", "Minimum R:R", "number"],
-  ["slb", "SL Buffer %", "number"],
+  ["rr","Minimum R:R","number"],
+  ["slb","SL Buffer %","number"],
 
-  ["mvr", "Min Volume Ratio", "number"],
-  ["mc", "Min Confirmations", "number"]
+  ["mvr","Min Volume Ratio","number"],
+  ["mc","Min Confirmations","number"]
 
 ];
 
 
 /* ============================================================
-   BUILD SETTINGS FORM
+   BUILD SETTINGS
    ============================================================ */
 
 for (const d of defs) {
@@ -121,24 +93,15 @@ for (const d of defs) {
     input.type = "number";
   }
 
-  if (d[0] === "rr") {
-    input.step = ".1";
-  }
-
-  if (d[0] === "slb") {
-    input.step = ".05";
-  }
-
-  if (d[0] === "mvr") {
-    input.step = ".1";
-  }
+  if (d[0] === "rr") input.step = ".1";
+  if (d[0] === "slb") input.step = ".05";
+  if (d[0] === "mvr") input.step = ".1";
 
   if (d[2] === "select") {
 
     TF.forEach(t => {
 
-      const option =
-        document.createElement("option");
+      const option = document.createElement("option");
 
       option.value = t;
       option.textContent = t;
@@ -151,50 +114,145 @@ for (const d of defs) {
 
   label.appendChild(input);
 
-  $("settings").appendChild(label);
+  if ($("settings")) {
+    $("settings").appendChild(label);
+  }
 }
 
 
 /* ============================================================
-   PROFESSIONAL UI
+   LIGHT PROFESSIONAL UI
    ============================================================ */
 
 function applyProfessionalUI() {
 
-  if (document.getElementById(
-    "professional-scanner-ui"
-  )) {
+  if (document.getElementById("professional-scanner-ui")) {
     return;
   }
 
-  const style =
-    document.createElement("style");
+  const style = document.createElement("style");
 
-  style.id =
-    "professional-scanner-ui";
+  style.id = "professional-scanner-ui";
 
   style.textContent = `
 
-    * {
-      box-sizing: border-box;
+    :root {
+
+      --ui-bg:#f4f7fb;
+      --ui-surface:#ffffff;
+      --ui-surface-soft:#f8fafc;
+
+      --ui-border:#e2e8f0;
+      --ui-border-strong:#cbd5e1;
+
+      --ui-text:#172033;
+      --ui-text-soft:#64748b;
+      --ui-text-muted:#94a3b8;
+
+      --ui-primary:#2563eb;
+      --ui-primary-soft:#eff6ff;
+
+      --ui-green:#15803d;
+      --ui-green-soft:#f0fdf4;
+
+      --ui-red:#dc2626;
+      --ui-red-soft:#fef2f2;
+
+      --ui-amber:#b45309;
+      --ui-amber-soft:#fffbeb;
+
+      --ui-cyan:#0369a1;
+      --ui-cyan-soft:#f0f9ff;
+
+      --ui-purple:#7c3aed;
+      --ui-purple-soft:#f5f3ff;
+
+      --ui-shadow:
+        0 4px 16px rgba(15,23,42,.06);
+
+      --ui-shadow-hover:
+        0 8px 24px rgba(15,23,42,.09);
     }
 
-    /* --------------------------------------------------------
+
+    *,
+    *::before,
+    *::after {
+      box-sizing:border-box;
+    }
+
+
+    html {
+      background:var(--ui-bg) !important;
+    }
+
+
+    body {
+      background:var(--ui-bg) !important;
+      color:var(--ui-text) !important;
+      font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif !important;
+    }
+
+
+    button,
+    input,
+    select {
+      font-family:inherit;
+    }
+
+
+    main,
+    .container,
+    .dashboard,
+    .app,
+    .page,
+    .content {
+      color:var(--ui-text) !important;
+    }
+
+
+    header,
+    .header,
+    .topbar,
+    .navbar,
+    .hero,
+    .panel,
+    .card,
+    .scanner-panel,
+    .settings-panel,
+    .toolbar,
+    .scanner-toolbar {
+      border-color:var(--ui-border) !important;
+    }
+
+
+    /* ========================================================
        SETTINGS
-       -------------------------------------------------------- */
+       ======================================================== */
 
     #settings {
 
-      display:grid;
+      display:grid !important;
 
       grid-template-columns:
-        repeat(auto-fit,minmax(145px,1fr));
+        repeat(auto-fit,minmax(155px,1fr));
 
-      gap:10px;
+      gap:12px;
 
-      margin-top:12px;
+      margin-top:14px;
       margin-bottom:18px;
+
+      padding:0;
+
+      background:transparent !important;
     }
+
 
     #settings label {
 
@@ -202,478 +260,840 @@ function applyProfessionalUI() {
 
       flex-direction:column;
 
-      gap:6px;
+      gap:7px;
 
-      padding:9px 10px;
+      min-width:0;
 
-      background:
-        rgba(255,255,255,.025);
+      padding:11px 12px;
+
+      background:#ffffff !important;
+
+      color:#475569 !important;
 
       border:
-        1px solid rgba(255,255,255,.055);
+        1px solid #e2e8f0 !important;
 
       border-radius:10px;
 
-      color:#9caabd;
-
       font-size:11px;
 
-      font-weight:600;
+      font-weight:700;
 
-      transition:.2s ease;
+      line-height:1.25;
+
+      box-shadow:
+        0 1px 2px rgba(15,23,42,.03);
+
+      transition:
+        border-color .18s ease,
+        box-shadow .18s ease,
+        transform .18s ease;
     }
+
 
     #settings label:hover {
 
-      border-color:
-        rgba(0,220,160,.25);
+      border-color:#bfdbfe !important;
 
-      background:
-        rgba(0,220,160,.035);
+      box-shadow:
+        0 4px 14px rgba(15,23,42,.06);
+
+      transform:translateY(-1px);
     }
+
 
     #settings input,
     #settings select {
 
       width:100%;
 
-      background:#0c131d;
+      min-height:34px;
 
-      color:#edf4fb;
+      background:#ffffff !important;
+
+      color:#172033 !important;
 
       border:
-        1px solid rgba(255,255,255,.09);
+        1px solid #cbd5e1 !important;
 
       border-radius:7px;
 
-      padding:7px 8px;
+      padding:7px 9px;
 
       outline:none;
 
       font-size:12px;
 
-      font-weight:600;
+      font-weight:700;
+
+      box-shadow:
+        inset 0 1px 1px rgba(15,23,42,.02);
     }
+
+
+    #settings select option {
+
+      background:#ffffff !important;
+
+      color:#172033 !important;
+    }
+
+
+    #settings input:hover,
+    #settings select:hover {
+
+      border-color:#94a3b8 !important;
+    }
+
 
     #settings input:focus,
     #settings select:focus {
 
       border-color:
-        rgba(0,220,160,.65);
+        var(--ui-primary) !important;
 
       box-shadow:
-        0 0 0 2px
-        rgba(0,220,160,.08);
+        0 0 0 3px
+        rgba(37,99,235,.10) !important;
     }
 
 
-    /* --------------------------------------------------------
-       STATUS
-       -------------------------------------------------------- */
+    /* ========================================================
+       BUTTONS
+       ======================================================== */
 
-    .dot.ok {
+    button,
+    .filter-btn,
+    #saveButton {
 
-      background:#00e6a0 !important;
-
-      box-shadow:
-        0 0 10px
-        rgba(0,230,160,.8) !important;
-    }
-
-
-    /* --------------------------------------------------------
-       TABLE
-       -------------------------------------------------------- */
-
-    table {
-
-      font-variant-numeric:
-        tabular-nums;
-    }
-
-    tbody tr {
+      border-radius:8px !important;
 
       transition:
-        background .15s ease;
+        all .18s ease !important;
     }
 
-    tbody tr:hover {
+
+    #saveButton {
 
       background:
-        rgba(0,230,160,.035);
-    }
+        var(--ui-primary) !important;
 
-
-    /* --------------------------------------------------------
-       COIN
-       -------------------------------------------------------- */
-
-    .coin-name {
-
-      color:#fff;
-
-      font-weight:900;
-
-      letter-spacing:.2px;
-    }
-
-
-    /* --------------------------------------------------------
-       24H CHANGE
-       -------------------------------------------------------- */
-
-    .positive {
-
-      color:#00e6a0 !important;
-
-      font-weight:900;
-    }
-
-    .negative {
-
-      color:#ff5577 !important;
-
-      font-weight:900;
-    }
-
-    .neutral-value {
-
-      color:#9aa8b8 !important;
-    }
-
-
-    /* --------------------------------------------------------
-       SIGNAL
-       -------------------------------------------------------- */
-
-    .signal-badge {
-
-      display:inline-flex;
-
-      align-items:center;
-
-      justify-content:center;
-
-      min-width:72px;
-
-      padding:5px 9px;
-
-      border-radius:999px;
-
-      font-size:9px;
-
-      font-weight:900;
-
-      letter-spacing:.4px;
-    }
-
-    .signal-buy {
-
-      color:#00f0a8;
-
-      background:
-        rgba(0,230,160,.11);
+      color:#ffffff !important;
 
       border:
-        1px solid
-        rgba(0,230,160,.30);
+        1px solid var(--ui-primary) !important;
+
+      font-weight:800 !important;
+
+      box-shadow:
+        0 2px 6px
+        rgba(37,99,235,.18) !important;
     }
 
-    .signal-sell {
 
-      color:#ff587b;
+    #saveButton:hover {
 
-      background:
-        rgba(255,70,105,.11);
+      background:#1d4ed8 !important;
+
+      border-color:#1d4ed8 !important;
+
+      box-shadow:
+        0 5px 14px
+        rgba(37,99,235,.22) !important;
+
+      transform:translateY(-1px);
+    }
+
+
+    #saveButton:disabled {
+
+      opacity:.65 !important;
+
+      transform:none !important;
+    }
+
+
+    .filter-btn {
+
+      background:#ffffff !important;
+
+      color:#475569 !important;
 
       border:
-        1px solid
-        rgba(255,70,105,.30);
-    }
+        1px solid #e2e8f0 !important;
 
-    .signal-neutral {
-
-      color:#a8b4c3;
-
-      background:
-        rgba(148,163,184,.08);
-
-      border:
-        1px solid
-        rgba(148,163,184,.18);
+      font-weight:750 !important;
     }
 
 
-    /* --------------------------------------------------------
-       SCORE
-       -------------------------------------------------------- */
+    .filter-btn:hover {
 
-    .score {
+      background:#f8fafc !important;
 
-      display:inline-flex;
+      border-color:#cbd5e1 !important;
 
-      align-items:center;
-
-      justify-content:center;
-
-      min-width:42px;
-
-      padding:4px 7px;
-
-      border-radius:6px;
-
-      font-weight:900;
+      color:#1e293b !important;
     }
 
-    .score-high {
-
-      color:#00edaa;
-
-      background:
-        rgba(0,230,160,.08);
-    }
-
-    .score-low {
-
-      color:#ff5b7e;
-
-      background:
-        rgba(255,70,105,.08);
-    }
-
-    .score-mid {
-
-      color:#f4ca60;
-
-      background:
-        rgba(244,202,96,.08);
-    }
-
-
-    /* --------------------------------------------------------
-       CONFIRMATION
-       -------------------------------------------------------- */
-
-    .confirmation {
-
-      display:inline-flex;
-
-      align-items:center;
-
-      justify-content:center;
-
-      min-width:32px;
-
-      padding:4px 7px;
-
-      border-radius:6px;
-
-      font-size:9px;
-
-      font-weight:900;
-    }
-
-    .confirmation-strong {
-
-      color:#00e6a0;
-
-      background:
-        rgba(0,230,160,.08);
-    }
-
-    .confirmation-medium {
-
-      color:#f4ca60;
-
-      background:
-        rgba(244,202,96,.08);
-    }
-
-    .confirmation-low {
-
-      color:#ff627f;
-
-      background:
-        rgba(255,98,127,.08);
-    }
-
-
-    /* --------------------------------------------------------
-       INDICATORS
-       -------------------------------------------------------- */
-
-    .indicator-buy {
-
-      color:#00e6a0;
-
-      font-weight:800;
-    }
-
-    .indicator-sell {
-
-      color:#ff5577;
-
-      font-weight:800;
-    }
-
-    .indicator-neutral {
-
-      color:#9aa8b8;
-    }
-
-
-    /* --------------------------------------------------------
-       HEIKIN ASHI
-       -------------------------------------------------------- */
-
-    .ha-bull {
-
-      color:#00e6a0;
-
-      font-weight:900;
-    }
-
-    .ha-bear {
-
-      color:#ff5577;
-
-      font-weight:900;
-    }
-
-
-    /* --------------------------------------------------------
-       S/R
-       -------------------------------------------------------- */
-
-    .support {
-
-      color:#73d9bc;
-
-      font-weight:700;
-    }
-
-    .resistance {
-
-      color:#ff9aaa;
-
-      font-weight:700;
-    }
-
-
-    /* --------------------------------------------------------
-       TRADE PLAN
-       -------------------------------------------------------- */
-
-    .entry {
-
-      color:#70b7ff;
-
-      font-weight:900;
-    }
-
-    .sl {
-
-      color:#ff587b;
-
-      font-weight:900;
-    }
-
-    .tp {
-
-      color:#00e6a0;
-
-      font-weight:900;
-    }
-
-    .rr-value {
-
-      color:#f4ca60;
-
-      font-weight:900;
-    }
-
-
-    /* --------------------------------------------------------
-       FILTER COUNT
-       -------------------------------------------------------- */
-
-    #filterCount {
-
-      display:inline-flex;
-
-      align-items:center;
-
-      margin-left:7px;
-
-      padding:3px 8px;
-
-      border-radius:999px;
-
-      background:
-        rgba(255,255,255,.05);
-
-      border:
-        1px solid
-        rgba(255,255,255,.08);
-
-      color:#8fa3b3;
-
-      font-size:9px;
-
-      font-weight:800;
-    }
-
-
-    /* --------------------------------------------------------
-       ACTIVE FILTERS
-       -------------------------------------------------------- */
 
     .filter-btn.active {
 
+      background:
+        var(--ui-primary-soft) !important;
+
+      color:#1d4ed8 !important;
+
+      border-color:#bfdbfe !important;
+
       box-shadow:
-        0 0 12px
-        rgba(70,150,190,.10);
+        0 2px 8px
+        rgba(37,99,235,.08) !important;
     }
 
 
-    /* --------------------------------------------------------
-       EMPTY RESULT
-       -------------------------------------------------------- */
+    /* ========================================================
+       SEARCH
+       ======================================================== */
 
-    .filter-empty {
+    #searchInput {
 
-      padding:35px !important;
+      background:#ffffff !important;
 
-      text-align:center !important;
+      color:#172033 !important;
 
-      color:#71899a !important;
+      border:
+        1px solid #cbd5e1 !important;
+
+      border-radius:8px !important;
+
+      outline:none !important;
+    }
+
+
+    #searchInput::placeholder {
+
+      color:#94a3b8 !important;
+    }
+
+
+    #searchInput:focus {
+
+      border-color:
+        var(--ui-primary) !important;
+
+      box-shadow:
+        0 0 0 3px
+        rgba(37,99,235,.10) !important;
+    }
+
+
+    /* ========================================================
+       STATUS
+       ======================================================== */
+
+    .dot.ok {
+
+      background:#16a34a !important;
+
+      box-shadow:
+        0 0 0 3px
+        rgba(22,163,74,.12) !important;
+    }
+
+
+    .dot:not(.ok) {
+
+      background:#f59e0b !important;
+
+      box-shadow:
+        0 0 0 3px
+        rgba(245,158,11,.12) !important;
+    }
+
+
+    #msg {
+
+      color:
+        var(--ui-green) !important;
+
+      font-weight:700;
+    }
+
+
+    /* ========================================================
+       TABLE
+       ======================================================== */
+
+    table {
+
+      width:100%;
+
+      font-variant-numeric:
+        tabular-nums;
+
+      border-collapse:
+        separate !important;
+
+      border-spacing:0 !important;
+
+      background:#ffffff !important;
+
+      color:var(--ui-text) !important;
+
+      border:
+        1px solid #e2e8f0 !important;
+
+      border-radius:10px;
+
+      overflow:hidden;
+    }
+
+
+    thead {
+
+      background:#f8fafc !important;
+    }
+
+
+    thead tr {
+
+      background:#f8fafc !important;
+    }
+
+
+    th {
+
+      background:#f8fafc !important;
+
+      color:#475569 !important;
+
+      border-bottom:
+        1px solid #e2e8f0 !important;
+
+      font-size:10px !important;
+
+      font-weight:800 !important;
+
+      text-transform:uppercase;
+
+      letter-spacing:.035em;
+
+      white-space:nowrap;
+    }
+
+
+    td {
+
+      background:#ffffff !important;
+
+      color:#334155 !important;
+
+      border-bottom:
+        1px solid #edf1f5 !important;
+
+      font-size:11px !important;
 
       font-weight:600;
+
+      white-space:nowrap;
     }
 
 
-    /* --------------------------------------------------------
-       MOBILE
-       -------------------------------------------------------- */
+    tbody tr {
+
+      background:#ffffff !important;
+
+      transition:
+        background .12s ease;
+    }
+
+
+    tbody tr:nth-child(even) {
+
+      background:#fbfcfe !important;
+    }
+
+
+    tbody tr:hover td {
+
+      background:#f5f9ff !important;
+    }
+
+
+    tbody tr:last-child td {
+
+      border-bottom:none !important;
+    }
+
+
+    .coin-name {
+
+      color:#0f172a !important;
+
+      font-weight:850 !important;
+
+      letter-spacing:.01em;
+    }
+
+
+    /* ========================================================
+       BUY / SELL / NEUTRAL
+       Strong enough for white background
+       ======================================================== */
+
+    .signal-buy,
+    .buy,
+    .BUY {
+
+      background:
+        #dcfce7 !important;
+
+      color:
+        #166534 !important;
+
+      border:
+        1px solid #86efac !important;
+
+      font-weight:850 !important;
+    }
+
+
+    .signal-sell,
+    .sell,
+    .SELL {
+
+      background:
+        #fee2e2 !important;
+
+      color:
+        #b91c1c !important;
+
+      border:
+        1px solid #fca5a5 !important;
+
+      font-weight:850 !important;
+    }
+
+
+    .signal-neutral,
+    .neutral,
+    .NEUTRAL {
+
+      background:
+        #fef3c7 !important;
+
+      color:
+        #92400e !important;
+
+      border:
+        1px solid #fcd34d !important;
+
+      font-weight:850 !important;
+    }
+
+
+    /* ========================================================
+       SCORE
+       ======================================================== */
+
+    .score-high {
+
+      background:#dcfce7 !important;
+
+      color:#166534 !important;
+
+      border:
+        1px solid #86efac !important;
+    }
+
+
+    .score-low {
+
+      background:#fee2e2 !important;
+
+      color:#b91c1c !important;
+
+      border:
+        1px solid #fca5a5 !important;
+    }
+
+
+    .score-mid {
+
+      background:#fef3c7 !important;
+
+      color:#92400e !important;
+
+      border:
+        1px solid #fcd34d !important;
+    }
+
+
+    /* ========================================================
+       CONFIRMATION
+       ======================================================== */
+
+    .confirm {
+
+      background:#eff6ff !important;
+
+      color:#1d4ed8 !important;
+
+      border:
+        1px solid #bfdbfe !important;
+    }
+
+
+    /* ========================================================
+       RSI
+       ======================================================== */
+
+    .rsi-bull {
+
+      background:#dcfce7 !important;
+
+      color:#166534 !important;
+
+      border:
+        1px solid #86efac !important;
+    }
+
+
+    .rsi-bear {
+
+      background:#fee2e2 !important;
+
+      color:#b91c1c !important;
+
+      border:
+        1px solid #fca5a5 !important;
+    }
+
+
+    .rsi-neutral {
+
+      background:#f8fafc !important;
+
+      color:#475569 !important;
+
+      border:
+        1px solid #e2e8f0 !important;
+    }
+
+
+    /* ========================================================
+       MACD
+       ======================================================== */
+
+    .macd-bull {
+
+      color:#15803d !important;
+
+      font-weight:800 !important;
+    }
+
+
+    .macd-bear {
+
+      color:#dc2626 !important;
+
+      font-weight:800 !important;
+    }
+
+
+    /* ========================================================
+       STOCHASTIC
+       ======================================================== */
+
+    .stoch-bull {
+
+      color:#15803d !important;
+
+      font-weight:800 !important;
+    }
+
+
+    .stoch-bear {
+
+      color:#dc2626 !important;
+
+      font-weight:800 !important;
+    }
+
+
+    /* ========================================================
+       HA
+       ======================================================== */
+
+    .ha-bull {
+
+      background:#f0fdf4 !important;
+
+      color:#166534 !important;
+
+      border:
+        1px solid #bbf7d0 !important;
+    }
+
+
+    .ha-bear {
+
+      background:#fef2f2 !important;
+
+      color:#b91c1c !important;
+
+      border:
+        1px solid #fecaca !important;
+    }
+
+
+    /* ========================================================
+       SUPPORT / RESISTANCE
+       ======================================================== */
+
+    .support {
+
+      color:#0369a1 !important;
+
+      background:#f0f9ff !important;
+
+      padding:3px 6px;
+
+      border-radius:5px;
+
+      font-weight:750 !important;
+    }
+
+
+    .resistance {
+
+      color:#7c3aed !important;
+
+      background:#f5f3ff !important;
+
+      padding:3px 6px;
+
+      border-radius:5px;
+
+      font-weight:750 !important;
+    }
+
+
+    /* ========================================================
+       TRADE PLAN
+       ======================================================== */
+
+    .entry {
+
+      color:#0369a1 !important;
+
+      font-weight:800 !important;
+    }
+
+
+    .sl {
+
+      color:#dc2626 !important;
+
+      font-weight:800 !important;
+    }
+
+
+    .tp {
+
+      color:#15803d !important;
+
+      font-weight:800 !important;
+    }
+
+
+    .rr {
+
+      background:#f5f3ff !important;
+
+      color:#6d28d9 !important;
+
+      border:
+        1px solid #ddd6fe !important;
+
+      font-weight:850 !important;
+    }
+
+
+    /* ========================================================
+       COMMON BADGE
+       ======================================================== */
+
+    .badge,
+    .signal,
+    .score,
+    .confirmation,
+    .rr-badge {
+
+      display:inline-flex;
+
+      align-items:center;
+
+      justify-content:center;
+
+      min-height:24px;
+
+      padding:3px 7px;
+
+      border-radius:6px;
+
+      font-size:10px;
+
+      line-height:1;
+
+      font-weight:800;
+    }
+
+
+    /* ========================================================
+       CARDS
+       ======================================================== */
+
+    .card {
+
+      background:#ffffff !important;
+
+      color:#172033 !important;
+
+      border:
+        1px solid #e2e8f0 !important;
+
+      box-shadow:
+        var(--ui-shadow) !important;
+    }
+
+
+    .card:hover {
+
+      box-shadow:
+        var(--ui-shadow-hover) !important;
+    }
+
+
+    /* ========================================================
+       INPUTS OUTSIDE SETTINGS
+       ======================================================== */
+
+    input,
+    select {
+
+      color:#172033;
+    }
+
+
+    input::placeholder {
+
+      color:#94a3b8;
+    }
+
+
+    /* ========================================================
+       TEXT
+       ======================================================== */
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+
+      color:#172033 !important;
+    }
+
+
+    p,
+    span {
+
+      --keep-existing-color:initial;
+    }
+
+
+    .muted,
+    .subtle,
+    .secondary {
+
+      color:#64748b !important;
+    }
+
+
+    /* ========================================================
+       SCROLLBAR
+       ======================================================== */
+
+    ::-webkit-scrollbar {
+
+      width:9px;
+
+      height:9px;
+    }
+
+
+    ::-webkit-scrollbar-track {
+
+      background:#eef2f7;
+    }
+
+
+    ::-webkit-scrollbar-thumb {
+
+      background:#cbd5e1;
+
+      border-radius:20px;
+
+      border:
+        2px solid #eef2f7;
+    }
+
+
+    ::-webkit-scrollbar-thumb:hover {
+
+      background:#94a3b8;
+    }
+
+
+    /* ========================================================
+       RESPONSIVE
+       ======================================================== */
 
     @media(max-width:900px) {
 
       #settings {
 
         grid-template-columns:
-          repeat(3,minmax(130px,1fr));
+          repeat(auto-fit,minmax(135px,1fr));
+
+        gap:9px;
       }
 
+      th {
+
+        font-size:9px !important;
+      }
+
+      td {
+
+        font-size:10px !important;
+      }
     }
+
 
     @media(max-width:600px) {
 
       #settings {
 
         grid-template-columns:
-          repeat(2,minmax(120px,1fr));
+          repeat(2,minmax(0,1fr));
       }
 
+      #settings label {
+
+        padding:9px;
+      }
     }
 
   `;
@@ -685,83 +1105,26 @@ applyProfessionalUI();
 
 
 /* ============================================================
-   SETTINGS FILL
+   SETTINGS HELPERS
    ============================================================ */
 
-function fill(s) {
+function fill(settings) {
 
-  if (!s) {
-    return;
-  }
+  if (!settings) return;
 
-  if ($("wave_tf")) {
-    $("wave_tf").value = s.wave_tf;
-  }
+  defs.forEach(d => {
 
-  if ($("tide_tf")) {
-    $("tide_tf").value = s.tide_tf;
-  }
+    const el = $(d[0]);
 
-  ["we1","we2","we3"].forEach(
-    (x,i) => {
-      if ($(x) && s.wave_ema) {
-        $(x).value = s.wave_ema[i];
-      }
+    if (!el) return;
+
+    if (settings[d[0]] !== undefined) {
+
+      el.value = settings[d[0]];
     }
-  );
 
-  ["te1","te2","te3"].forEach(
-    (x,i) => {
-      if ($(x) && s.tide_ema) {
-        $(x).value = s.tide_ema[i];
-      }
-    }
-  );
-
-  ["fe1","fe2"].forEach(
-    (x,i) => {
-      if ($(x) && s.tide_filter_ema) {
-        $(x).value =
-          s.tide_filter_ema[i];
-      }
-    }
-  );
-
-  if ($("rp")) $("rp").value = s.rsi_period;
-  if ($("rb")) $("rb").value = s.rsi_buy;
-  if ($("rs")) $("rs").value = s.rsi_sell;
-
-  if ($("mf")) $("mf").value = s.macd_fast;
-  if ($("ms")) $("ms").value = s.macd_slow;
-  if ($("mg")) $("mg").value = s.macd_signal;
-
-  if ($("sp")) $("sp").value = s.stoch_period;
-  if ($("sk")) $("sk").value = s.stoch_k;
-  if ($("sd")) $("sd").value = s.stoch_d;
-
-  if ($("vs")) $("vs").value = s.volume_sma;
-
-  if ($("bs")) $("bs").value = s.buy_score;
-  if ($("ss")) $("ss").value = s.sell_score;
-
-  if ($("srl")) $("srl").value = s.sr_lookback;
-  if ($("srp")) $("srp").value = s.sr_pivot;
-
-  if ($("rr")) $("rr").value = s.min_rr;
-  if ($("slb")) $("slb").value = s.sl_buffer_pct;
-
-  if ($("mvr")) $("mvr").value = s.min_volume_ratio;
-  if ($("mc")) $("mc").value =
-    s.min_signal_confirmations;
+  });
 }
-
-
-/* ============================================================
-   NUMBER HELPER
-   ============================================================ */
-
-const n = id =>
-  Number($(id).value);
 
 
 /* ============================================================
@@ -770,98 +1133,53 @@ const n = id =>
 
 async function save() {
 
+  const settings = {};
+
+  defs.forEach(d => {
+
+    const el = $(d[0]);
+
+    if (!el) return;
+
+    if (d[2] === "number") {
+
+      settings[d[0]] =
+        Number(el.value);
+
+    } else {
+
+      settings[d[0]] =
+        el.value;
+    }
+
+  });
+
+
   const button =
     $("saveButton");
 
+  const msg =
+    $("msg");
+
+
   if (button) {
+
     button.disabled = true;
+
     button.textContent =
-      "⏳ Saving...";
+      "Saving...";
   }
 
-  const s = {
 
-    wave_tf:
-      $("wave_tf").value,
+  if (msg) {
 
-    tide_tf:
-      $("tide_tf").value,
+    msg.textContent = "";
+  }
 
-    wave_ema: [
-      n("we1"),
-      n("we2"),
-      n("we3")
-    ],
-
-    tide_ema: [
-      n("te1"),
-      n("te2"),
-      n("te3")
-    ],
-
-    tide_filter_ema: [
-      n("fe1"),
-      n("fe2")
-    ],
-
-    rsi_period:
-      n("rp"),
-
-    rsi_buy:
-      n("rb"),
-
-    rsi_sell:
-      n("rs"),
-
-    macd_fast:
-      n("mf"),
-
-    macd_slow:
-      n("ms"),
-
-    macd_signal:
-      n("mg"),
-
-    stoch_period:
-      n("sp"),
-
-    stoch_k:
-      n("sk"),
-
-    stoch_d:
-      n("sd"),
-
-    volume_sma:
-      n("vs"),
-
-    buy_score:
-      n("bs"),
-
-    sell_score:
-      n("ss"),
-
-    sr_lookback:
-      n("srl"),
-
-    sr_pivot:
-      n("srp"),
-
-    min_rr:
-      n("rr"),
-
-    sl_buffer_pct:
-      n("slb"),
-
-    min_volume_ratio:
-      n("mvr"),
-
-    min_signal_confirmations:
-      n("mc")
-  };
 
   try {
 
-    const r =
+    const response =
       await fetch(
         "/api/settings",
         {
@@ -873,47 +1191,60 @@ async function save() {
           },
 
           body:
-            JSON.stringify(s)
+            JSON.stringify(settings)
         }
       );
 
-    if (!r.ok) {
+
+    if (!response.ok) {
 
       throw new Error(
-        `HTTP ${r.status}`
+        `HTTP ${response.status}`
       );
     }
 
-    const j =
-      await r.json();
 
-    if (j.settings) {
-      fill(j.settings);
+    const data =
+      await response.json();
+
+
+    latestData =
+      latestData || {};
+
+    latestData.settings =
+      data.settings ||
+      settings;
+
+
+    fill(
+      latestData.settings
+    );
+
+
+    if (msg) {
+
+      msg.textContent =
+        "✓ Settings saved successfully";
     }
 
-    if ($("msg")) {
 
-      $("msg").textContent =
-        "✓ Saved. New scan started.";
+    render(
+      latestData
+    );
 
-      setTimeout(() => {
-
-        $("msg").textContent = "";
-
-      },3000);
-    }
 
   } catch(e) {
 
     console.error(
-      "Settings save error:",
+      "Settings save failed:",
       e
     );
 
-    if ($("msg")) {
 
-      $("msg").textContent =
-        "Save failed: " + e.message;
+    if (msg) {
+
+      msg.textContent =
+        "✕ Failed to save settings";
     }
 
   } finally {
@@ -923,95 +1254,65 @@ async function save() {
       button.disabled = false;
 
       button.textContent =
-        "💾 Save & Rescan";
+        "Save Settings";
     }
+
   }
 }
 
 
 /* ============================================================
-   GENERAL FORMATTER
+   FORMAT HELPERS
    ============================================================ */
 
-function f(x,d=6) {
+function f(value, decimals = 2) {
 
   if (
-    x === null ||
-    x === undefined ||
-    x === "" ||
-    Number.isNaN(Number(x))
+    value === null ||
+    value === undefined ||
+    value === "" ||
+    Number.isNaN(Number(value))
   ) {
     return "—";
   }
 
-  return Number(x).toLocaleString(
+  return Number(value).toLocaleString(
     undefined,
     {
-      maximumFractionDigits:d
+      minimumFractionDigits:decimals,
+      maximumFractionDigits:decimals
     }
   );
 }
 
 
-/* ============================================================
-   24H CHANGE
-   ============================================================ */
-
-function formatChange(x) {
+function formatChange(value) {
 
   if (
-    x === null ||
-    x === undefined ||
-    x === "" ||
-    Number.isNaN(Number(x))
+    value === null ||
+    value === undefined ||
+    Number.isNaN(Number(value))
   ) {
     return "—";
   }
 
-  const value =
-    Number(x);
+  const n = Number(value);
 
-  if (value > 0) {
+  const cls =
+    n > 0
+      ? "macd-bull"
+      : n < 0
+        ? "macd-bear"
+        : "";
 
-    return `
-      <span class="positive">
-        ▲ ${f(value,2)}%
-      </span>
-    `;
-  }
-
-  if (value < 0) {
-
-    return `
-      <span class="negative">
-        ▼ ${f(Math.abs(value),2)}%
-      </span>
-    `;
-  }
+  const sign =
+    n > 0 ? "+" : "";
 
   return `
-    <span class="neutral-value">
-      ${f(value,2)}%
+    <span class="${cls}">
+      ${sign}${f(n,2)}%
     </span>
   `;
-}
-
-
-/* ============================================================
-   SIGNAL CLASS
-   ============================================================ */
-
-function sigClass(signal) {
-
-  if (signal === "BUY") {
-    return "signal-buy";
-  }
-
-  if (signal === "SELL") {
-    return "signal-sell";
-  }
-
-  return "signal-neutral";
 }
 
 
@@ -1022,21 +1323,33 @@ function sigClass(signal) {
 function signalBadge(signal) {
 
   const s =
-    signal || "NEUTRAL";
+    String(signal || "NEUTRAL")
+      .toUpperCase();
 
-  let icon = "•";
 
   if (s === "BUY") {
-    icon = "▲";
+
+    return `
+      <span class="badge signal-buy">
+        BUY
+      </span>
+    `;
   }
+
 
   if (s === "SELL") {
-    icon = "▼";
+
+    return `
+      <span class="badge signal-sell">
+        SELL
+      </span>
+    `;
   }
 
+
   return `
-    <span class="signal-badge ${sigClass(s)}">
-      ${icon}&nbsp;${s}
+    <span class="badge signal-neutral">
+      NEUTRAL
     </span>
   `;
 }
@@ -1056,62 +1369,52 @@ function scoreBadge(score) {
     return "—";
   }
 
-  const value =
+  const n =
     Number(score);
+
 
   let cls =
     "score-mid";
 
-  if (value >= 70) {
-    cls = "score-high";
+
+  if (n >= 70) {
+
+    cls =
+      "score-high";
+
+  } else if (n <= 30) {
+
+    cls =
+      "score-low";
   }
 
-  if (value <= 30) {
-    cls = "score-low";
-  }
 
   return `
-    <span class="score ${cls}">
-      ${f(value,0)}
+    <span class="badge ${cls}">
+      ${f(n,0)}
     </span>
   `;
 }
 
 
 /* ============================================================
-   CONFIRMATION BADGE
+   CONFIRMATION
    ============================================================ */
 
-function confirmationBadge(conf) {
+function confirmationBadge(value) {
 
   if (
-    conf === null ||
-    conf === undefined ||
-    Number.isNaN(Number(conf))
+    value === null ||
+    value === undefined ||
+    value === ""
   ) {
     return "—";
   }
 
-  const value =
-    Number(conf);
-
-  let cls =
-    "confirmation-low";
-
-  if (value >= 7) {
-
-    cls =
-      "confirmation-strong";
-
-  } else if (value >= 5) {
-
-    cls =
-      "confirmation-medium";
-  }
 
   return `
-    <span class="confirmation ${cls}">
-      ${value}/8
+    <span class="badge confirm">
+      ${value}
     </span>
   `;
 }
@@ -1131,21 +1434,28 @@ function rsiDisplay(value) {
     return "—";
   }
 
-  const v =
+  const n =
     Number(value);
 
-  if (v >= 50) {
+  let cls =
+    "rsi-neutral";
 
-    return `
-      <span class="indicator-buy">
-        ${f(v,2)}
-      </span>
-    `;
+
+  if (n >= 55) {
+
+    cls =
+      "rsi-bull";
+
+  } else if (n <= 45) {
+
+    cls =
+      "rsi-bear";
   }
 
+
   return `
-    <span class="indicator-sell">
-      ${f(v,2)}
+    <span class="badge ${cls}">
+      ${f(n,1)}
     </span>
   `;
 }
@@ -1153,38 +1463,40 @@ function rsiDisplay(value) {
 
 /* ============================================================
    MACD
-   ------------------------------------------------------------
-   IMPORTANT:
-   Backend structure:
-   x.wave.macd
-   x.wave.macd_signal
    ============================================================ */
 
 function macdDisplay(w) {
 
+  if (!w) return "—";
+
   const macd =
-    w?.macd;
+    Number(w.macd);
 
   const signal =
-    w?.macd_signal;
+    Number(w.macd_signal);
+
 
   if (
-    macd === null ||
-    macd === undefined ||
-    signal === null ||
-    signal === undefined
+    Number.isNaN(macd) ||
+    Number.isNaN(signal)
   ) {
     return "—";
   }
 
-  const cls =
-    Number(macd) >= Number(signal)
-      ? "indicator-buy"
-      : "indicator-sell";
+
+  const bullish =
+    macd >= signal;
+
 
   return `
-    <span class="${cls}">
+    <span class="${
+      bullish
+        ? "macd-bull"
+        : "macd-bear"
+    }">
       ${f(macd,6)}
+      /
+      ${f(signal,6)}
     </span>
   `;
 }
@@ -1192,37 +1504,40 @@ function macdDisplay(w) {
 
 /* ============================================================
    STOCHASTIC
-   ------------------------------------------------------------
-   Backend structure:
-   x.wave.stoch_k
-   x.wave.stoch_d
    ============================================================ */
 
 function stochDisplay(w) {
 
+  if (!w) return "—";
+
   const k =
-    w?.stoch_k;
+    Number(w.stoch_k);
 
   const d =
-    w?.stoch_d;
+    Number(w.stoch_d);
+
 
   if (
-    k === null ||
-    k === undefined ||
-    d === null ||
-    d === undefined
+    Number.isNaN(k) ||
+    Number.isNaN(d)
   ) {
     return "—";
   }
 
-  const cls =
-    Number(k) >= Number(d)
-      ? "indicator-buy"
-      : "indicator-sell";
+
+  const bullish =
+    k >= d;
+
 
   return `
-    <span class="${cls}">
-      ${f(k,1)} / ${f(d,1)}
+    <span class="${
+      bullish
+        ? "stoch-bull"
+        : "stoch-bear"
+    }">
+      ${f(k,1)}
+      /
+      ${f(d,1)}
     </span>
   `;
 }
@@ -1234,60 +1549,55 @@ function stochDisplay(w) {
 
 function haDisplay(ha) {
 
-  if (!ha) {
-    return "—";
-  }
+  if (!ha) return "—";
 
-  if (ha.bull) {
+
+  const value =
+    String(
+      ha.signal ||
+      ha.direction ||
+      ha.color ||
+      ""
+    ).toUpperCase();
+
+
+  if (
+    value.includes("BUY") ||
+    value.includes("BULL") ||
+    value.includes("GREEN")
+  ) {
 
     return `
-      <span class="ha-bull">
-        🟢 Bull
+      <span class="badge ha-bull">
+        ${value || "BULL"}
       </span>
     `;
   }
 
-  if (ha.bear) {
+
+  if (
+    value.includes("SELL") ||
+    value.includes("BEAR") ||
+    value.includes("RED")
+  ) {
 
     return `
-      <span class="ha-bear">
-        🔴 Bear
+      <span class="badge ha-bear">
+        ${value || "BEAR"}
       </span>
     `;
   }
 
-  return "—";
+
+  return value || "—";
 }
 
 
 /* ============================================================
-   SAFE S/R
-   ------------------------------------------------------------
-   UI ONLY.
-   Does NOT change scanner calculations.
+   SUPPORT / RESISTANCE
    ============================================================ */
 
 function safeSR(value) {
-
-  if (
-    value === null ||
-    value === undefined ||
-    value === "" ||
-    Number.isNaN(Number(value)) ||
-    Number(value) <= 0
-  ) {
-    return "—";
-  }
-
-  return f(value,8);
-}
-
-
-/* ============================================================
-   TRADE PLAN VALUE
-   ============================================================ */
-
-function planValue(value, cls) {
 
   if (
     value === null ||
@@ -1298,17 +1608,33 @@ function planValue(value, cls) {
     return "—";
   }
 
+  return f(value,8);
+}
+
+
+/* ============================================================
+   TRADE PLAN
+   ============================================================ */
+
+function planValue(value,type) {
+
+  if (
+    value === null ||
+    value === undefined ||
+    value === "" ||
+    Number.isNaN(Number(value))
+  ) {
+    return "—";
+  }
+
+
   return `
-    <span class="${cls}">
+    <span class="${type}">
       ${f(value,8)}
     </span>
   `;
 }
 
-
-/* ============================================================
-   R:R
-   ============================================================ */
 
 function rrDisplay(value) {
 
@@ -1321,82 +1647,59 @@ function rrDisplay(value) {
     return "—";
   }
 
+
   return `
-    <span class="rr-value">
-      1:${f(value,2)}
+    <span class="badge rr">
+      ${f(value,2)}R
     </span>
   `;
 }
 
 
 /* ============================================================
-   FILTER BUTTON STATE
+   FILTER BUTTONS
    ============================================================ */
 
 function updateFilterButtons() {
 
-  const buttons = {
+  [
+    ["filterAll","ALL"],
+    ["filterBuy","BUY"],
+    ["filterSell","SELL"],
+    ["filterNeutral","NEUTRAL"]
+  ].forEach(
+    ([id,value]) => {
 
-    ALL:
-      $("filterAll"),
+      const button =
+        $(id);
 
-    BUY:
-      $("filterBuy"),
-
-    SELL:
-      $("filterSell"),
-
-    NEUTRAL:
-      $("filterNeutral")
-  };
-
-  Object.entries(buttons).forEach(
-    ([key,button]) => {
-
-      if (!button) {
-        return;
-      }
+      if (!button) return;
 
       button.classList.toggle(
         "active",
-        activeFilter === key
+        activeFilter === value
       );
-
     }
   );
 }
 
 
-/* ============================================================
-   SET FILTER
-   ------------------------------------------------------------
-   THIS WAS THE MISSING FUNCTION.
-   ============================================================ */
-
 function setFilter(filter) {
 
-  const allowed = [
-    "ALL",
-    "BUY",
-    "SELL",
-    "NEUTRAL"
-  ];
-
-  if (!allowed.includes(filter)) {
-    filter = "ALL";
-  }
-
   activeFilter =
-    filter;
+    String(filter || "ALL")
+      .toUpperCase();
 
   updateFilterButtons();
 
-  renderLatest();
+  render(
+    latestData
+  );
 }
 
 
 /* ============================================================
-   SEARCH LISTENER
+   SEARCH
    ============================================================ */
 
 function setupSearch() {
@@ -1404,9 +1707,8 @@ function setupSearch() {
   const input =
     $("searchInput");
 
-  if (!input) {
-    return;
-  }
+  if (!input) return;
+
 
   input.addEventListener(
     "input",
@@ -1417,201 +1719,26 @@ function setupSearch() {
           .trim()
           .toUpperCase();
 
-      renderLatest();
-
-    }
-  );
-}
-
-
-/* ============================================================
-   FILTER MARKET DATA
-   ------------------------------------------------------------ */
-
-function filterMarkets(markets) {
-
-  return markets.filter(
-    market => {
-
-      const symbol =
-        String(
-          market.symbol || ""
-        ).toUpperCase();
-
-      const signal =
-        String(
-          market.indicators?.signal ||
-          "NEUTRAL"
-        ).toUpperCase();
-
-      /* ------------------------------------------------------
-         SEARCH
-         ------------------------------------------------------ */
-
-      const matchesSearch =
-        !searchText ||
-        symbol.includes(searchText);
-
-      if (!matchesSearch) {
-        return false;
-      }
-
-      /* ------------------------------------------------------
-         SIGNAL FILTER
-         ------------------------------------------------------ */
-
-      if (
-        activeFilter !== "ALL" &&
-        signal !== activeFilter
-      ) {
-        return false;
-      }
-
-      return true;
-
-    }
-  );
-}
-
-
-/* ============================================================
-   FILTER COUNT
-   ------------------------------------------------------------ */
-
-function updateFilterCount(
-  total,
-  visible
-) {
-
-  let count =
-    document.getElementById(
-      "filterCount"
-    );
-
-  if (!count) {
-
-    const title =
-      document.querySelector(
-        ".scanner-toolbar"
+      render(
+        latestData
       );
-
-    if (title) {
-
-      count =
-        document.createElement(
-          "span"
-        );
-
-      count.id =
-        "filterCount";
-
-      title.appendChild(count);
     }
-  }
-
-  if (count) {
-
-    count.textContent =
-      `${visible} / ${total}`;
-  }
-}
-
-
-/* ============================================================
-   RENDER LATEST DATA
-   ============================================================ */
-
-function renderLatest() {
-
-  if (!latestData) {
-    return;
-  }
-
-  render(
-    latestData
   );
 }
 
 
 /* ============================================================
-   MAIN RENDER
+   RENDER
    ============================================================ */
 
 function render(j) {
 
-  if (!j) {
-    return;
-  }
+  if (!j) return;
+
 
   latestData =
     j;
 
-  /* ----------------------------------------------------------
-     STATUS
-     ---------------------------------------------------------- */
-
-  if (j.status) {
-
-    if ($("coins")) {
-
-      $("coins").textContent =
-        j.status.coins ?? "—";
-    }
-
-    if ($("scan")) {
-
-      $("scan").textContent =
-        j.status.last_scan
-          ? new Date(
-              j.status.last_scan * 1000
-            ).toLocaleTimeString()
-          : "—";
-    }
-
-    if ($("dot")) {
-
-      $("dot").className =
-        "dot " +
-        (
-          j.status.ws_connected
-            ? "ok"
-            : ""
-        );
-    }
-
-    if ($("st")) {
-
-      $("st").textContent =
-        j.status.ws_connected
-          ? "Delta WS connected"
-          : "Reconnecting";
-    }
-  }
-
-
-  /* ----------------------------------------------------------
-     SETTINGS / TIMEFRAMES
-     ---------------------------------------------------------- */
-
-  if (j.settings) {
-
-    if ($("wave")) {
-
-      $("wave").textContent =
-        j.settings.wave_tf;
-    }
-
-    if ($("tide")) {
-
-      $("tide").textContent =
-        j.settings.tide_tf;
-    }
-  }
-
-
-  /* ----------------------------------------------------------
-     MARKET DATA
-     ---------------------------------------------------------- */
 
   const markets =
     Array.isArray(j.markets)
@@ -1619,119 +1746,148 @@ function render(j) {
       : [];
 
 
-  /* ----------------------------------------------------------
-     FILTER MARKETS
-     ---------------------------------------------------------- */
-
-  const filtered =
-    filterMarkets(markets);
+  const status =
+    j.status || {};
 
 
-  /* ----------------------------------------------------------
-     COUNT
-     ---------------------------------------------------------- */
+  if ($("coins")) {
 
-  updateFilterCount(
-    markets.length,
-    filtered.length
-  );
-
-
-  /* ----------------------------------------------------------
-     EMPTY
-     ---------------------------------------------------------- */
-
-  if (!filtered.length) {
-
-    $("rows").innerHTML = `
-
-      <tr>
-
-        <td
-          colspan="28"
-          class="filter-empty"
-        >
-
-          ${
-            markets.length
-              ? "🔎 No coins match the current search/filter."
-              : "Waiting for scanner data..."
-          }
-
-        </td>
-
-      </tr>
-
-    `;
-
-    return;
+    $("coins").textContent =
+      markets.length;
   }
 
 
-  /* ----------------------------------------------------------
-     SORT
-     ----------------------------------------------------------
-     SAME SORTING AS ORIGINAL:
-     SCORE DESCENDING
-     ---------------------------------------------------------- */
+  if ($("scan")) {
 
-  const a =
-    [...filtered].sort(
-      (x,y) =>
-        (y.indicators?.score ?? -1) -
-        (x.indicators?.score ?? -1)
+    $("scan").textContent =
+      status.last_scan ||
+      status.updated ||
+      j.last_scan ||
+      "—";
+  }
+
+
+  if ($("wave")) {
+
+    $("wave").textContent =
+      j.settings?.wave_tf ||
+      "—";
+  }
+
+
+  if ($("tide")) {
+
+    $("tide").textContent =
+      j.settings?.tide_tf ||
+      "—";
+  }
+
+
+  if ($("st")) {
+
+    $("st").textContent =
+      status.message ||
+      status.status ||
+      "Connected";
+  }
+
+
+  const filtered =
+    markets.filter(
+      m => {
+
+        const signal =
+          String(
+            m.signal ||
+            m.final_signal ||
+            m.trade_signal ||
+            "NEUTRAL"
+          ).toUpperCase();
+
+
+        if (
+          activeFilter !== "ALL" &&
+          signal !== activeFilter
+        ) {
+          return false;
+        }
+
+
+        if (!searchText) {
+          return true;
+        }
+
+
+        const symbol =
+          String(
+            m.symbol || ""
+          ).toUpperCase();
+
+
+        return symbol.includes(
+          searchText
+        );
+      }
     );
 
 
-  /* ----------------------------------------------------------
-     BUILD TABLE
-     ---------------------------------------------------------- */
+  const rows =
+    $("rows");
 
-  $("rows").innerHTML =
-    a.map(
+  if (!rows) return;
+
+
+  rows.innerHTML =
+    filtered.map(
       (m,i) => {
 
         const x =
-          m.indicators || {};
+          m.indicators ||
+          m;
+
 
         const w =
-          x.wave || {};
+          x.wave ||
+          x.wave_indicators ||
+          m.wave ||
+          m;
+
 
         const ha =
-          x.ha || {};
+          x.ha ||
+          x.heikin_ashi ||
+          m.ha;
+
 
         const sr =
-          x.sr || {};
+          x.sr ||
+          x.support_resistance ||
+          m.sr ||
+          {};
+
 
         const p =
-          x.plan || {};
+          x.trade_plan ||
+          m.trade_plan ||
+          {};
+
 
         const s =
-          x.signal || "NEUTRAL";
+          String(
+            x.signal ||
+            m.signal ||
+            m.final_signal ||
+            m.trade_signal ||
+            "NEUTRAL"
+          ).toUpperCase();
 
-
-        /* ----------------------------------------------------
-           CONFIRMATIONS
-           ---------------------------------------------------- */
 
         const conf =
-          s === "BUY"
+          x.confirmations ??
+          x.confirmation ??
+          m.confirmations ??
+          m.confirmation;
 
-            ? (x.buy_confirmations ?? 0)
-
-            : s === "SELL"
-
-              ? (x.sell_confirmations ?? 0)
-
-              : Math.max(
-                  x.buy_confirmations || 0,
-                  x.sell_confirmations || 0
-                );
-
-
-        /* ----------------------------------------------------
-           SIGNAL-SPECIFIC PLAN
-           ---------------------------------------------------- */
 
         const entry =
           s !== "NEUTRAL"
@@ -1741,6 +1897,7 @@ function render(j) {
               )
             : "—";
 
+
         const sl =
           s !== "NEUTRAL"
             ? planValue(
@@ -1748,6 +1905,7 @@ function render(j) {
                 "sl"
               )
             : "—";
+
 
         const tp1 =
           s !== "NEUTRAL"
@@ -1757,6 +1915,7 @@ function render(j) {
               )
             : "—";
 
+
         const tp2 =
           s !== "NEUTRAL"
             ? planValue(
@@ -1764,6 +1923,7 @@ function render(j) {
                 "tp"
               )
             : "—";
+
 
         const rr =
           s !== "NEUTRAL"
@@ -1773,10 +1933,6 @@ function render(j) {
             : "—";
 
 
-        /* ----------------------------------------------------
-           RETURN ROW
-           ---------------------------------------------------- */
-
         return `
 
           <tr>
@@ -1785,13 +1941,11 @@ function render(j) {
               <strong>${i + 1}</strong>
             </td>
 
-
             <td>
               <span class="coin-name">
                 ${m.symbol ?? "—"}
               </span>
             </td>
-
 
             <td>
               <strong>
@@ -1799,86 +1953,69 @@ function render(j) {
               </strong>
             </td>
 
-
             <td>
               ${formatChange(m.change)}
             </td>
-
 
             <td>
               ${f(m.volume,0)}
             </td>
 
-
             <td>
               ${m.volume_rank ?? "—"}
             </td>
-
 
             <td>
               ${f(m.oi,0)}
             </td>
 
-
             <td>
               ${j.settings?.wave_tf ?? "—"}
             </td>
-
 
             <td>
               ${j.settings?.tide_tf ?? "—"}
             </td>
 
-
             <td>
               ${f(x.tide9,8)}
             </td>
-
 
             <td>
               ${f(x.tide20,8)}
             </td>
 
-
             <td>
               ${rsiDisplay(w.rsi)}
             </td>
-
 
             <td>
               ${macdDisplay(w)}
             </td>
 
-
             <td>
               ${stochDisplay(w)}
             </td>
-
 
             <td>
               ${scoreBadge(x.score)}
             </td>
 
-
             <td>
               ${x.score_rank ?? "—"}
             </td>
-
 
             <td>
               ${signalBadge(s)}
             </td>
 
-
             <td>
               ${confirmationBadge(conf)}
             </td>
 
-
             <td>
               ${haDisplay(ha)}
             </td>
-
 
             <td>
               <span class="support">
@@ -1886,13 +2023,11 @@ function render(j) {
               </span>
             </td>
 
-
             <td>
               <span class="support">
                 ${safeSR(sr.s1)}
               </span>
             </td>
-
 
             <td>
               <span class="resistance">
@@ -1900,33 +2035,27 @@ function render(j) {
               </span>
             </td>
 
-
             <td>
               <span class="resistance">
                 ${safeSR(sr.r2)}
               </span>
             </td>
 
-
             <td>
               ${entry}
             </td>
-
 
             <td>
               ${sl}
             </td>
 
-
             <td>
               ${tp1}
             </td>
 
-
             <td>
               ${tp2}
             </td>
-
 
             <td>
               ${rr}
@@ -1935,7 +2064,6 @@ function render(j) {
           </tr>
 
         `;
-
       }
     ).join("");
 }
@@ -1954,6 +2082,7 @@ async function loadInitial() {
         "/api/status"
       );
 
+
     if (!response.ok) {
 
       throw new Error(
@@ -1961,11 +2090,14 @@ async function loadInitial() {
       );
     }
 
+
     const data =
       await response.json();
 
+
     latestData =
       data;
+
 
     if (data.settings) {
 
@@ -1974,9 +2106,11 @@ async function loadInitial() {
       );
     }
 
+
     render(
       data
     );
+
 
   } catch(e) {
 
@@ -1984,6 +2118,7 @@ async function loadInitial() {
       "Initial API load failed:",
       e
     );
+
 
     if ($("st")) {
 
@@ -2007,11 +2142,13 @@ function connect() {
         ? "wss"
         : "ws";
 
+
     const url =
       protocol +
       "://" +
       location.host +
       "/ws";
+
 
     socket =
       new WebSocket(
@@ -2019,21 +2156,19 @@ function connect() {
       );
 
 
-    /* --------------------------------------------------------
-       CONNECTED
-       -------------------------------------------------------- */
-
     socket.onopen = () => {
 
       console.log(
         "Delta Cloud Scanner WebSocket connected"
       );
 
+
       if ($("st")) {
 
         $("st").textContent =
           "Delta WS connected";
       }
+
 
       if ($("dot")) {
 
@@ -2042,10 +2177,6 @@ function connect() {
       }
     };
 
-
-    /* --------------------------------------------------------
-       MESSAGE
-       -------------------------------------------------------- */
 
     socket.onmessage =
       event => {
@@ -2057,83 +2188,174 @@ function connect() {
               event.data
             );
 
+
           /*
            * V4 bandwidth protocol:
-           * The server sends one full snapshot initially, then compact
-           * market patches. Merge patches into the existing client state.
+           * Initial full snapshot + compact market patches.
            */
-          if (data && data.type === "delta") {
+
+          if (
+            data &&
+            data.type === "delta"
+          ) {
 
             if (!latestData) {
-              // A rare race: recover with the normal REST snapshot.
+
               return;
             }
 
+
             if (data.status) {
+
               latestData.status = {
+
                 ...(latestData.status || {}),
+
                 ...data.status
+
               };
             }
 
+
             if (data.settings) {
-              latestData.settings = data.settings;
-              fill(data.settings);
+
+              latestData.settings =
+                data.settings;
+
+              fill(
+                data.settings
+              );
             }
 
-            if (!Array.isArray(latestData.markets)) {
+
+            if (
+              !Array.isArray(
+                latestData.markets
+              )
+            ) {
+
               latestData.markets = [];
             }
 
-            const bySymbol = new Map(
-              latestData.markets.map(m => [
-                String(m.symbol),
-                m
-              ])
-            );
 
-            if (Array.isArray(data.markets)) {
-              data.markets.forEach(patch => {
-                const symbol = String(patch.symbol || "");
-                if (!symbol) return;
+            const bySymbol =
+              new Map(
+                latestData.markets.map(
+                  m => [
+                    String(m.symbol),
+                    m
+                  ]
+                )
+              );
 
-                const existing = bySymbol.get(symbol);
 
-                if (!existing) {
-                  latestData.markets.push(patch);
-                  bySymbol.set(symbol, patch);
-                  return;
-                }
+            if (
+              Array.isArray(
+                data.markets
+              )
+            ) {
 
-                Object.keys(patch).forEach(key => {
-                  if (key === "indicators" &&
-                      patch.indicators &&
-                      typeof patch.indicators === "object") {
-                    existing.indicators = patch.indicators;
-                  } else {
-                    existing[key] = patch[key];
+              data.markets.forEach(
+                patch => {
+
+                  const symbol =
+                    String(
+                      patch.symbol || ""
+                    );
+
+
+                  if (!symbol) return;
+
+
+                  const existing =
+                    bySymbol.get(
+                      symbol
+                    );
+
+
+                  if (!existing) {
+
+                    latestData.markets.push(
+                      patch
+                    );
+
+                    bySymbol.set(
+                      symbol,
+                      patch
+                    );
+
+                    return;
                   }
-                });
-              });
+
+
+                  Object.keys(
+                    patch
+                  ).forEach(
+                    key => {
+
+                      if (
+                        key === "indicators" &&
+                        patch.indicators &&
+                        typeof patch.indicators ===
+                          "object"
+                      ) {
+
+                        existing.indicators =
+                          patch.indicators;
+
+                      } else {
+
+                        existing[key] =
+                          patch[key];
+                      }
+
+                    }
+                  );
+
+                }
+              );
             }
 
-            if (Array.isArray(data.removed) && data.removed.length) {
-              const removeSet = new Set(
-                data.removed.map(String)
-              );
+
+            if (
+              Array.isArray(
+                data.removed
+              ) &&
+              data.removed.length
+            ) {
+
+              const removeSet =
+                new Set(
+                  data.removed.map(
+                    String
+                  )
+                );
+
 
               latestData.markets =
                 latestData.markets.filter(
-                  m => !removeSet.has(String(m.symbol))
+                  m =>
+                    !removeSet.has(
+                      String(m.symbol)
+                    )
                 );
             }
 
-            render(latestData);
+
+            render(
+              latestData
+            );
+
 
           } else {
-            // V3/full snapshot compatibility.
-            render(data);
+
+            /* V3/full snapshot compatibility */
+
+            render(
+              data
+            );
           }
+
 
         } catch(e) {
 
@@ -2145,10 +2367,6 @@ function connect() {
       };
 
 
-    /* --------------------------------------------------------
-       ERROR
-       -------------------------------------------------------- */
-
     socket.onerror =
       error => {
 
@@ -2157,15 +2375,13 @@ function connect() {
           error
         );
 
+
         if (socket) {
+
           socket.close();
         }
       };
 
-
-    /* --------------------------------------------------------
-       CLOSED
-       -------------------------------------------------------- */
 
     socket.onclose =
       () => {
@@ -2174,11 +2390,13 @@ function connect() {
           "WebSocket disconnected. Reconnecting..."
         );
 
+
         if ($("st")) {
 
           $("st").textContent =
             "Reconnecting...";
         }
+
 
         if ($("dot")) {
 
@@ -2186,12 +2404,14 @@ function connect() {
             "dot";
         }
 
+
         if (reconnectTimer) {
 
           clearTimeout(
             reconnectTimer
           );
         }
+
 
         reconnectTimer =
           setTimeout(
@@ -2208,6 +2428,7 @@ function connect() {
       e
     );
 
+
     reconnectTimer =
       setTimeout(
         connect,
@@ -2218,35 +2439,20 @@ function connect() {
 
 
 /* ============================================================
-   INITIALIZE FILTERS
+   INITIALIZE
    ============================================================ */
 
 updateFilterButtons();
 
 setupSearch();
 
-
-/* ============================================================
-   INITIAL LOAD
-   ============================================================ */
-
 loadInitial();
-
-
-/* ============================================================
-   START WEBSOCKET
-   ============================================================ */
 
 connect();
 
 
 /* ============================================================
    GLOBAL FUNCTIONS
-   ------------------------------------------------------------
-   Required by index.html:
-   onclick="save()"
-   onclick="setFilter('BUY')"
-   etc.
    ============================================================ */
 
 window.save =
@@ -2261,11 +2467,11 @@ window.setFilter =
    ============================================================ */
 
 console.log(
-  "%cDelta Cloud Scanner V4 - Bandwidth Optimized",
-  "color:#00e6a0;font-size:16px;font-weight:800"
+  "%cDelta Cloud Scanner V4 - Professional Light Dashboard",
+  "color:#2563eb;font-size:16px;font-weight:800"
 );
 
 console.log(
-  "%cProfessional frontend + Search + Signal Filters loaded",
-  "color:#8fa0b5;font-size:12px"
+  "%cSearch + BUY/SELL/NEUTRAL Filters + WebSocket + Light UI loaded",
+  "color:#64748b;font-size:12px"
 );

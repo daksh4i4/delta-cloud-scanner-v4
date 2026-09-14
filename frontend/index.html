@@ -1,69 +1,28 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Delta Cloud Scanner V3">
 
-<meta name="description"
-      content="Delta Cloud Scanner V4 - Professional Crypto Market Scanner by Daksh Patel">
-
-<title>Delta Cloud Scanner V4 | Daksh Patel</title>
+<title>Delta Cloud Scanner V3</title>
 
 <style>
-/* =========================================================
-   DELTA CLOUD SCANNER V4
-   PROFESSIONAL LIGHT TRADING DASHBOARD
-   UI ONLY - SCANNER LOGIC UNCHANGED
-   ========================================================= */
-
-:root{
-    --bg:#f4f7fb;
-    --surface:#ffffff;
-    --surface-soft:#f8fafc;
-    --border:#e2e8f0;
-
-    --text:#172033;
-    --muted:#64748b;
-    --muted-light:#94a3b8;
-
-    --blue:#2563eb;
-    --blue-soft:#eff6ff;
-
-    --green:#059669;
-    --green-bg:#ecfdf5;
-
-    --red:#dc2626;
-    --red-bg:#fef2f2;
-
-    --yellow:#d97706;
-    --yellow-bg:#fffbeb;
-
-    --purple:#7c3aed;
-    --shadow:0 4px 18px rgba(15,23,42,.06);
-    --shadow-hover:0 8px 25px rgba(15,23,42,.10);
-}
-
 *{
-    box-sizing:border-box;
+  box-sizing:border-box;
 }
 
 html{
-    scroll-behavior:smooth;
+  scroll-behavior:smooth;
 }
 
 body{
-    margin:0;
-    background:var(--bg);
-    color:var(--text);
-    font-family:
-        Inter,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Arial,
-        sans-serif;
-    font-size:13px;
+  margin:0;
+  background:#050b12;
+  color:#e8f1f8;
+  font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;
+  font-size:13px;
 }
 
 /* =========================================================
@@ -71,94 +30,65 @@ body{
    ========================================================= */
 
 header{
-    position:sticky;
-    top:0;
-    z-index:100;
-
-    background:rgba(255,255,255,.96);
-    backdrop-filter:blur(12px);
-
-    border-bottom:1px solid var(--border);
-
-    box-shadow:0 2px 12px rgba(15,23,42,.05);
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:rgba(7,17,27,.96);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid #203342;
+  padding:14px 18px;
 }
 
 .header-inner{
-    max-width:1900px;
-    margin:auto;
+  max-width:1900px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
 
-    padding:15px 20px;
-
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    gap:20px;
+.brand{
+  min-width:0;
 }
 
 .brand h1{
-    margin:0;
-
-    font-size:21px;
-    font-weight:800;
-
-    color:#0f172a;
-
-    letter-spacing:-.3px;
-}
-
-.brand-name{
-    color:var(--blue);
-    font-size:.68em;
-    font-weight:700;
-
-    margin-left:6px;
-
-    white-space:nowrap;
+  margin:0;
+  font-size:19px;
+  font-weight:800;
+  letter-spacing:.2px;
 }
 
 .brand-sub{
-    margin-top:5px;
-
-    color:var(--muted);
-
-    font-size:11px;
+  margin-top:4px;
+  color:#8196a8;
+  font-size:11px;
 }
 
 .connection{
-    display:flex;
-    align-items:center;
-    gap:8px;
-
-    padding:8px 13px;
-
-    background:#f8fafc;
-
-    border:1px solid var(--border);
-    border-radius:999px;
-
-    color:#475569;
-
-    font-size:11px;
-    font-weight:700;
-
-    white-space:nowrap;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 11px;
+  border:1px solid #263d4c;
+  border-radius:999px;
+  background:#091722;
+  white-space:nowrap;
+  font-size:11px;
+  font-weight:700;
 }
 
 .dot{
-    width:9px;
-    height:9px;
-
-    border-radius:50%;
-
-    background:#ef4444;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#ff5368;
+  box-shadow:0 0 8px rgba(255,83,104,.5);
 }
 
 .dot.ok{
-    background:#10b981 !important;
-
-    box-shadow:
-        0 0 0 4px rgba(16,185,129,.12);
+  background:#39e69b;
+  box-shadow:0 0 8px rgba(57,230,155,.55);
 }
 
 /* =========================================================
@@ -166,105 +96,51 @@ header{
    ========================================================= */
 
 main{
-    width:100%;
-    max-width:1900px;
-
-    margin:auto;
-
-    padding:18px 20px 25px;
+  width:100%;
+  max-width:1900px;
+  margin:auto;
+  padding:16px;
 }
 
 /* =========================================================
-   KPI CARDS
+   STAT CARDS
    ========================================================= */
 
 .cards{
-    display:grid;
-
-    grid-template-columns:
-        repeat(4,minmax(0,1fr));
-
-    gap:14px;
-
-    margin-bottom:16px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-bottom:12px;
 }
 
 .card{
-    position:relative;
-
-    background:var(--surface);
-
-    border:1px solid var(--border);
-
-    border-radius:14px;
-
-    padding:17px 18px;
-
-    min-height:92px;
-
-    box-shadow:var(--shadow);
-
-    overflow:hidden;
-
-    transition:.18s ease;
-}
-
-.card:hover{
-    transform:translateY(-2px);
-
-    box-shadow:var(--shadow-hover);
-}
-
-.card::before{
-    content:"";
-
-    position:absolute;
-
-    left:0;
-    top:0;
-    bottom:0;
-
-    width:4px;
-
-    background:var(--blue);
-}
-
-.card:nth-child(3)::before{
-    background:var(--green);
-}
-
-.card:nth-child(4)::before{
-    background:var(--purple);
+  background:linear-gradient(145deg,#0b1824,#08131d);
+  border:1px solid #203442;
+  border-radius:13px;
+  padding:14px;
+  min-height:82px;
 }
 
 .card-label{
-    color:var(--muted);
-
-    font-size:10px;
-
-    text-transform:uppercase;
-
-    letter-spacing:.7px;
-
-    font-weight:800;
+  color:#8197a8;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.7px;
+  font-weight:700;
 }
 
 .card-value{
-    margin-top:7px;
-
-    font-size:25px;
-
-    font-weight:800;
-
-    color:#0f172a;
+  margin-top:7px;
+  font-size:23px;
+  font-weight:800;
 }
 
 .card-value.wave{
-    color:var(--green);
+  color:#68b8ff;
 }
 
 .card-value.tide{
-    color:var(--purple);
+  color:#c28cff;
 }
 
 /* =========================================================
@@ -272,198 +148,116 @@ main{
    ========================================================= */
 
 .panel{
-    background:var(--surface);
-
-    border:1px solid var(--border);
-
-    border-radius:14px;
-
-    padding:17px;
-
-    margin-bottom:16px;
-
-    box-shadow:var(--shadow);
+  background:#091520;
+  border:1px solid #203442;
+  border-radius:14px;
+  padding:14px;
+  margin-bottom:12px;
+  box-shadow:0 8px 30px rgba(0,0,0,.12);
 }
 
 .panel-title{
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    gap:12px;
-
-    margin-bottom:14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:13px;
 }
 
 .panel-title h2{
-    margin:0;
-
-    color:#172033;
-
-    font-size:15px;
-
-    font-weight:800;
+  margin:0;
+  font-size:14px;
+  font-weight:800;
 }
 
 .panel-description{
-    margin-top:3px;
-
-    color:var(--muted);
-
-    font-size:11px;
+  color:#758c9d;
+  font-size:11px;
 }
 
 /* =========================================================
    SETTINGS
    ========================================================= */
 
-#settings{
-    display:grid;
-
-    grid-template-columns:
-        repeat(auto-fit,minmax(145px,1fr));
-
-    gap:10px;
-
-    margin-top:12px;
-    margin-bottom:15px;
+.settings-grid{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(130px,1fr));
+  gap:9px;
 }
 
-#settings label{
-    display:flex;
-
-    flex-direction:column;
-
-    gap:6px;
-
-    padding:10px;
-
-    background:var(--surface-soft);
-
-    border:1px solid var(--border);
-
-    border-radius:9px;
-
-    color:#64748b;
-
-    font-size:10px;
-
-    font-weight:700;
-
-    transition:.15s ease;
+.setting{
+  min-width:0;
 }
 
-#settings label:hover{
-    background:#ffffff;
-
-    border-color:#bfdbfe;
-
-    box-shadow:0 2px 8px rgba(37,99,235,.06);
+.setting label{
+  display:block;
+  color:#91a6b6;
+  font-size:10px;
+  font-weight:700;
+  margin-bottom:4px;
 }
 
-#settings input,
-#settings select{
-    width:100%;
-
-    min-height:34px;
-
-    background:#ffffff;
-
-    color:#172033;
-
-    border:1px solid #d5dde8;
-
-    border-radius:7px;
-
-    padding:7px 8px;
-
-    outline:none;
-
-    font-size:12px;
-
-    font-weight:600;
+input,
+select,
+button{
+  width:100%;
+  min-height:36px;
+  border-radius:8px;
+  border:1px solid #2a4251;
+  background:#06111a;
+  color:#edf6fb;
+  padding:8px 9px;
+  outline:none;
+  font:inherit;
 }
 
-#settings input:focus,
-#settings select:focus{
-    border-color:#60a5fa;
+input:focus,
+select:focus{
+  border-color:#3b8dbd;
+  box-shadow:0 0 0 2px rgba(59,141,189,.12);
+}
 
-    box-shadow:
-        0 0 0 3px rgba(37,99,235,.08);
+button{
+  cursor:pointer;
+  font-weight:800;
+  background:linear-gradient(180deg,#123048,#0c2335);
+  border-color:#31576d;
+  transition:.15s ease;
+}
+
+button:hover{
+  transform:translateY(-1px);
+  border-color:#4a7e98;
+}
+
+button:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+  transform:none;
 }
 
 .settings-actions{
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
+  margin-top:12px;
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
 
-#saveButton{
-    width:auto;
-
-    min-width:170px;
-
-    min-height:38px;
-
-    padding:8px 15px;
-
-    border:1px solid #1d4ed8;
-
-    border-radius:8px;
-
-    background:#2563eb;
-
-    color:white;
-
-    font-size:11px;
-
-    font-weight:800;
-
-    cursor:pointer;
-
-    transition:.15s ease;
+.save-button{
+  width:auto;
+  min-width:160px;
 }
 
-#saveButton:hover{
-    background:#1d4ed8;
-
-    transform:translateY(-1px);
-}
-
-#saveButton:disabled{
-    opacity:.6;
-
-    cursor:not-allowed;
-}
-
-#msg{
-    color:var(--green);
-
-    font-size:11px;
-
-    font-weight:700;
+.message{
+  color:#4ce4a1;
+  font-size:11px;
 }
 
 .note{
-    margin-top:10px;
-
-    padding:9px 11px;
-
-    background:#f8fafc;
-
-    border-left:3px solid #93c5fd;
-
-    border-radius:5px;
-
-    color:#64748b;
-
-    font-size:10px;
-
-    line-height:1.5;
+  margin-top:10px;
+  color:#72899a;
+  font-size:10px;
+  line-height:1.55;
 }
 
 /* =========================================================
@@ -471,166 +265,62 @@ main{
    ========================================================= */
 
 .scanner-toolbar{
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    gap:12px;
-
-    margin-bottom:13px;
-
-    flex-wrap:wrap;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:12px;
+  flex-wrap:wrap;
 }
 
 .search-box{
-    position:relative;
-
-    flex:1;
-
-    min-width:230px;
+  flex:1;
+  min-width:220px;
+  position:relative;
 }
 
 .search-box input{
-    width:100%;
-
-    min-height:38px;
-
-    padding:9px 12px 9px 35px;
-
-    background:#ffffff;
-
-    color:#172033;
-
-    border:1px solid #d8e0ea;
-
-    border-radius:9px;
-
-    outline:none;
-
-    font-size:12px;
-}
-
-.search-box input:focus{
-    border-color:#60a5fa;
-
-    box-shadow:
-        0 0 0 3px rgba(37,99,235,.07);
+  padding-left:34px;
 }
 
 .search-icon{
-    position:absolute;
-
-    left:12px;
-
-    top:50%;
-
-    transform:translateY(-50%);
-
-    color:#94a3b8;
-
-    pointer-events:none;
+  position:absolute;
+  left:11px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#6f8797;
+  pointer-events:none;
 }
 
 .filters{
-    display:flex;
-
-    gap:6px;
-
-    flex-wrap:wrap;
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
 }
 
 .filter-btn{
-    width:auto;
-
-    min-width:78px;
-
-    min-height:35px;
-
-    padding:7px 12px;
-
-    border:1px solid #d8e0ea;
-
-    border-radius:8px;
-
-    background:#ffffff;
-
-    color:#64748b;
-
-    font-size:10px;
-
-    font-weight:800;
-
-    cursor:pointer;
-
-    transition:.15s ease;
-}
-
-.filter-btn:hover{
-    background:#f8fafc;
-
-    border-color:#bfdbfe;
+  width:auto;
+  min-width:72px;
+  min-height:34px;
+  padding:7px 12px;
+  font-size:10px;
 }
 
 .filter-btn.active{
-    background:var(--blue-soft);
-
-    border-color:#93c5fd;
-
-    color:var(--blue);
-
-    box-shadow:none;
+  border-color:#4e89a9;
+  background:#143247;
 }
 
 .filter-btn.buy-filter.active{
-    background:var(--green-bg);
-
-    border-color:#86efac;
-
-    color:var(--green);
+  color:#4ce3a0;
 }
 
 .filter-btn.sell-filter.active{
-    background:var(--red-bg);
-
-    border-color:#fca5a5;
-
-    color:var(--red);
+  color:#ff7180;
 }
 
 .filter-btn.neutral-filter.active{
-    background:#f8fafc;
-
-    border-color:#cbd5e1;
-
-    color:#64748b;
-}
-
-/* =========================================================
-   FILTER COUNT
-   ========================================================= */
-
-#filterCount{
-    display:inline-flex;
-
-    align-items:center;
-
-    margin-left:7px;
-
-    padding:3px 8px;
-
-    border-radius:999px;
-
-    background:#f1f5f9;
-
-    border:1px solid #e2e8f0;
-
-    color:#64748b;
-
-    font-size:9px;
-
-    font-weight:800;
+  color:#9caeba;
 }
 
 /* =========================================================
@@ -638,391 +328,197 @@ main{
    ========================================================= */
 
 .table-wrap{
-    width:100%;
-
-    overflow:auto;
-
-    max-height:70vh;
-
-    border:1px solid var(--border);
-
-    border-radius:10px;
-
-    background:#ffffff;
-
-    scrollbar-width:thin;
+  width:100%;
+  overflow:auto;
+  max-height:70vh;
+  border:1px solid #1b303d;
+  border-radius:10px;
+  scrollbar-width:thin;
 }
 
 table{
-    width:max-content;
-
-    min-width:2100px;
-
-    border-collapse:separate;
-
-    border-spacing:0;
-
-    font-size:10px;
-
-    font-variant-numeric:tabular-nums;
+  width:max-content;
+  min-width:2100px;
+  border-collapse:separate;
+  border-spacing:0;
+  font-size:10px;
 }
 
 thead th{
-    position:sticky;
-
-    top:0;
-
-    z-index:20;
-
-    background:#f8fafc;
-
-    color:#64748b;
-
-    font-size:9px;
-
-    text-transform:uppercase;
-
-    letter-spacing:.35px;
-
-    font-weight:800;
-
-    border-bottom:1px solid #dbe3ec;
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:#0d1d29;
+  color:#8fa7b7;
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.3px;
+  font-weight:800;
+  border-bottom:1px solid #29404e;
 }
 
 th,
 td{
-    padding:9px 9px;
-
-    border-bottom:1px solid #edf1f5;
-
-    white-space:nowrap;
-
-    text-align:right;
-
-    height:36px;
+  padding:8px 8px;
+  border-bottom:1px solid #162a36;
+  white-space:nowrap;
+  text-align:right;
+  height:34px;
 }
 
 tbody tr{
-    background:#ffffff;
-
-    transition:.12s ease;
+  background:#08141e;
+  transition:background .12s ease;
 }
 
 tbody tr:hover{
-    background:#f8fbff;
+  background:#0d202d;
 }
 
 tbody tr:last-child td{
-    border-bottom:0;
+  border-bottom:0;
 }
 
-/* =========================================================
-   STICKY COLUMNS
-   ========================================================= */
+/* sticky columns */
 
 th:first-child,
 td:first-child{
-    position:sticky;
-
-    left:0;
-
-    z-index:25;
-
-    text-align:center;
-
-    width:45px;
-
-    min-width:45px;
+  position:sticky;
+  left:0;
+  z-index:25;
+  text-align:center;
+  width:45px;
+  min-width:45px;
 }
 
 th:nth-child(2),
 td:nth-child(2){
-    position:sticky;
-
-    left:45px;
-
-    z-index:25;
-
-    text-align:left;
-
-    min-width:115px;
+  position:sticky;
+  left:45px;
+  z-index:25;
+  text-align:left;
+  min-width:110px;
 }
 
 thead th:first-child,
 thead th:nth-child(2){
-    z-index:40;
-
-    background:#f1f5f9;
+  z-index:40;
+  background:#102331;
 }
 
 tbody td:first-child,
 tbody td:nth-child(2){
-    background:#ffffff;
+  background:#091720;
 }
 
 tbody tr:hover td:first-child,
 tbody tr:hover td:nth-child(2){
-    background:#f8fbff;
+  background:#0d202d;
 }
 
-/* =========================================================
-   COIN
-   ========================================================= */
-
-.coin-name{
-    color:#172033;
-
-    font-weight:900;
-
-    letter-spacing:.2px;
+.coin{
+  font-weight:800;
+  color:#eaf5fb;
 }
 
-/* =========================================================
-   NUMBERS
-   ========================================================= */
+.price{
+  font-weight:700;
+}
 
 .positive{
-    color:var(--green) !important;
-
-    font-weight:900;
+  color:#42dda0;
 }
 
 .negative{
-    color:var(--red) !important;
-
-    font-weight:900;
-}
-
-.neutral-value{
-    color:#64748b !important;
+  color:#ff6878;
 }
 
 /* =========================================================
-   SIGNAL
+   SIGNAL BADGES
    ========================================================= */
 
-.signal-badge{
-    display:inline-flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    min-width:72px;
-
-    padding:5px 9px;
-
-    border-radius:999px;
-
-    font-size:9px;
-
-    font-weight:900;
-
-    letter-spacing:.4px;
+.signal{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:65px;
+  padding:4px 8px;
+  border-radius:6px;
+  font-weight:900;
+  font-size:9px;
+  letter-spacing:.3px;
 }
 
-.signal-buy{
-    color:#047857;
-
-    background:#ecfdf5;
-
-    border:1px solid #a7f3d0;
+.signal.buy{
+  color:#4ce4a1;
+  background:rgba(46,211,139,.10);
+  border:1px solid rgba(46,211,139,.25);
 }
 
-.signal-sell{
-    color:#b91c1c;
-
-    background:#fef2f2;
-
-    border:1px solid #fecaca;
+.signal.sell{
+  color:#ff6e7d;
+  background:rgba(255,79,99,.10);
+  border:1px solid rgba(255,79,99,.25);
 }
 
-.signal-neutral{
-    color:#64748b;
-
-    background:#f8fafc;
-
-    border:1px solid #e2e8f0;
+.signal.neutral{
+  color:#9aabb7;
+  background:rgba(140,158,172,.08);
+  border:1px solid rgba(140,158,172,.15);
 }
-
-/* =========================================================
-   SCORE
-   ========================================================= */
 
 .score{
-    display:inline-flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    min-width:42px;
-
-    padding:4px 7px;
-
-    border-radius:6px;
-
-    font-weight:900;
+  font-weight:900;
 }
 
 .score-high{
-    color:#047857;
-
-    background:#ecfdf5;
+  color:#4ce4a1;
 }
 
 .score-low{
-    color:#b91c1c;
-
-    background:#fef2f2;
+  color:#ff6e7d;
 }
 
 .score-mid{
-    color:#b45309;
-
-    background:#fffbeb;
-}
-
-/* =========================================================
-   CONFIRMATION
-   ========================================================= */
-
-.confirmation{
-    display:inline-flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    min-width:32px;
-
-    padding:4px 7px;
-
-    border-radius:6px;
-
-    font-size:9px;
-
-    font-weight:900;
-}
-
-.confirmation-strong{
-    color:#047857;
-
-    background:#ecfdf5;
-}
-
-.confirmation-medium{
-    color:#b45309;
-
-    background:#fffbeb;
-}
-
-.confirmation-low{
-    color:#b91c1c;
-
-    background:#fef2f2;
-}
-
-/* =========================================================
-   INDICATORS
-   ========================================================= */
-
-.indicator-buy{
-    color:#059669;
-
-    font-weight:800;
-}
-
-.indicator-sell{
-    color:#dc2626;
-
-    font-weight:800;
-}
-
-.indicator-neutral{
-    color:#64748b;
-}
-
-/* =========================================================
-   HEIKIN ASHI
-   ========================================================= */
-
-.ha-bull{
-    color:#059669;
-
-    font-weight:900;
-}
-
-.ha-bear{
-    color:#dc2626;
-
-    font-weight:900;
-}
-
-/* =========================================================
-   SUPPORT / RESISTANCE
-   ========================================================= */
-
-.support{
-    color:#059669;
-
-    font-weight:700;
-}
-
-.resistance{
-    color:#dc2626;
-
-    font-weight:700;
+  color:#e8c66a;
 }
 
 /* =========================================================
    TRADE PLAN
    ========================================================= */
 
-.entry{
-    color:#2563eb;
-
-    font-weight:900;
+.plan-buy{
+  color:#54e4a5;
+  font-weight:700;
 }
 
-.sl{
-    color:#dc2626;
-
-    font-weight:900;
+.plan-sell{
+  color:#ff7180;
+  font-weight:700;
 }
 
-.tp{
-    color:#059669;
-
-    font-weight:900;
+.rr-good{
+  color:#54e4a5;
+  font-weight:900;
 }
 
-.rr-value{
-    color:#d97706;
-
-    font-weight:900;
+.rr-low{
+  color:#ffca68;
+  font-weight:800;
 }
 
-/* =========================================================
-   EMPTY / LOADING
-   ========================================================= */
-
-.loading{
-    padding:35px !important;
-
-    text-align:center !important;
-
-    color:#64748b !important;
+.dash{
+  color:#526b7b;
 }
 
-.filter-empty{
-    padding:35px !important;
+.ha-bull{
+  color:#4ce4a1;
+  font-weight:900;
+}
 
-    text-align:center !important;
-
-    color:#64748b !important;
-
-    font-weight:600;
+.ha-bear{
+  color:#ff6e7d;
+  font-weight:900;
 }
 
 /* =========================================================
@@ -1030,124 +526,143 @@ tbody tr:hover td:nth-child(2){
    ========================================================= */
 
 .footer{
-    padding:6px 0 18px;
-
-    text-align:center;
-
-    color:#94a3b8;
-
-    font-size:10px;
-}
-
-.footer-name{
-    color:var(--blue);
-
-    font-weight:800;
+  color:#536c7d;
+  font-size:10px;
+  text-align:center;
+  padding:5px 0 15px;
 }
 
 /* =========================================================
-   RESPONSIVE
+   MOBILE
    ========================================================= */
 
-@media(max-width:1100px){
-
-    .cards{
-        grid-template-columns:
-            repeat(2,minmax(0,1fr));
-    }
-
-    #settings{
-        grid-template-columns:
-            repeat(3,minmax(130px,1fr));
-    }
+@media(max-width:1200px){
+  .settings-grid{
+    grid-template-columns:repeat(4,minmax(130px,1fr));
+  }
 }
 
-@media(max-width:700px){
+@media(max-width:900px){
+  .cards{
+    grid-template-columns:repeat(2,1fr);
+  }
 
-    .header-inner{
-        flex-direction:column;
+  .settings-grid{
+    grid-template-columns:repeat(3,minmax(130px,1fr));
+  }
 
-        align-items:stretch;
-    }
-
-    .connection{
-        justify-content:center;
-    }
-
-    main{
-        padding:12px;
-    }
-
-    .cards{
-        grid-template-columns:
-            repeat(2,minmax(0,1fr));
-
-        gap:9px;
-    }
-
-    .card{
-        padding:13px;
-    }
-
-    .card-value{
-        font-size:20px;
-    }
-
-    #settings{
-        grid-template-columns:
-            repeat(2,minmax(120px,1fr));
-    }
-
-    .scanner-toolbar{
-        align-items:stretch;
-    }
-
-    .search-box{
-        min-width:100%;
-    }
-
-    .filters{
-        width:100%;
-    }
-
-    .filter-btn{
-        flex:1;
-    }
+  .header-inner{
+    align-items:flex-start;
+  }
 }
 
-@media(max-width:450px){
+@media(max-width:650px){
+  header{
+    padding:11px;
+  }
 
-    .brand h1{
-        font-size:17px;
-    }
+  .header-inner{
+    flex-direction:column;
+    align-items:stretch;
+  }
 
-    .brand-name{
-        display:block;
+  .connection{
+    justify-content:center;
+  }
 
-        margin:4px 0 0;
+  main{
+    padding:9px;
+  }
 
-        font-size:11px;
-    }
+  .cards{
+    grid-template-columns:repeat(2,1fr);
+    gap:7px;
+  }
 
-    .cards{
-        grid-template-columns:1fr 1fr;
-    }
+  .card{
+    padding:11px;
+    min-height:72px;
+  }
 
-    .card-label{
-        font-size:8px;
-    }
+  .card-value{
+    font-size:19px;
+  }
 
-    .card-value{
-        font-size:18px;
-    }
+  .settings-grid{
+    grid-template-columns:repeat(2,minmax(120px,1fr));
+  }
 
-    #settings{
-        grid-template-columns:1fr 1fr;
-    }
+  .panel{
+    padding:10px;
+    border-radius:11px;
+  }
 
-    .panel{
-        padding:11px;
-    }
+  .settings-actions{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .save-button{
+    width:100%;
+  }
+
+  .scanner-toolbar{
+    align-items:stretch;
+  }
+
+  .search-box{
+    min-width:100%;
+  }
+
+  .filters{
+    width:100%;
+  }
+
+  .filter-btn{
+    flex:1;
+  }
+
+  .table-wrap{
+    max-height:65vh;
+  }
+}
+
+@media(max-width:420px){
+  .settings-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .brand h1{
+    font-size:16px;
+  }
+
+  .brand-sub{
+    font-size:9px;
+  }
+
+  .card-label{
+    font-size:8px;
+  }
+
+  .card-value{
+    font-size:17px;
+  }
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.loading{
+  padding:30px;
+  text-align:center;
+  color:#7890a1;
+}
+
+.empty{
+  padding:30px;
+  text-align:center;
+  color:#71899a;
 }
 
 /* =========================================================
@@ -1155,380 +670,237 @@ tbody tr:hover td:nth-child(2){
    ========================================================= */
 
 ::-webkit-scrollbar{
-    width:8px;
-    height:8px;
+  width:8px;
+  height:8px;
 }
 
 ::-webkit-scrollbar-track{
-    background:#f1f5f9;
+  background:#061019;
 }
 
 ::-webkit-scrollbar-thumb{
-    background:#cbd5e1;
-
-    border-radius:10px;
+  background:#29404e;
+  border-radius:10px;
 }
 
 ::-webkit-scrollbar-thumb:hover{
-    background:#94a3b8;
+  background:#3c5b6d;
 }
 </style>
 </head>
 
 <body>
 
-<!-- =========================================================
-     HEADER
-     ========================================================= -->
-
 <header>
+  <div class="header-inner">
 
-    <div class="header-inner">
-
-        <div class="brand">
-
-            <h1>
-                📡 Delta Cloud Scanner V4
-                <span class="brand-name">
-                    • Daksh Patel
-                </span>
-            </h1>
-
-            <div class="brand-sub">
-                Professional Crypto Market Scanner
-                • Live Data • Technical Analysis • Smart Signals
-            </div>
-
-        </div>
-
-        <div class="connection">
-
-            <span id="dot" class="dot"></span>
-
-            <span id="st">
-                Connecting to Delta...
-            </span>
-
-        </div>
-
+    <div class="brand">
+      <h1>📡 Delta Cloud Scanner V3</h1>
+      <div class="brand-sub">
+        High-quality setups • Automatic S/R • Heikin-Ashi Tide • Risk/Reward
+      </div>
     </div>
 
+    <div class="connection">
+      <span id="dot" class="dot"></span>
+      <span id="st">Connecting to Delta...</span>
+    </div>
+
+  </div>
 </header>
-
-
-<!-- =========================================================
-     MAIN
-     ========================================================= -->
 
 <main>
 
+  <!-- ======================================================
+       STAT CARDS
+       ====================================================== -->
 
-    <!-- =====================================================
-         KPI CARDS
-         ===================================================== -->
+  <section class="cards">
 
-    <section class="cards">
+    <div class="card">
+      <div class="card-label">Perpetual Markets</div>
+      <div class="card-value" id="coins">0</div>
+    </div>
 
-        <div class="card">
+    <div class="card">
+      <div class="card-label">Last Scan</div>
+      <div class="card-value" id="scan">—</div>
+    </div>
 
-            <div class="card-label">
-                Perpetual Markets
-            </div>
+    <div class="card">
+      <div class="card-label">Wave Timeframe</div>
+      <div class="card-value wave" id="wave">—</div>
+    </div>
 
-            <div
-                class="card-value"
-                id="coins">
-                0
-            </div>
+    <div class="card">
+      <div class="card-label">Tide Timeframe</div>
+      <div class="card-value tide" id="tide">—</div>
+    </div>
 
+  </section>
+
+  <!-- ======================================================
+       SETTINGS
+       ====================================================== -->
+
+  <section class="panel">
+
+    <div class="panel-title">
+      <div>
+        <h2>⚙️ Scanner Settings</h2>
+        <div class="panel-description">
+          Change indicator and setup parameters without editing code.
         </div>
+      </div>
+    </div>
 
+    <div class="settings-grid" id="settings"></div>
 
-        <div class="card">
+    <div class="settings-actions">
+      <button
+        id="saveButton"
+        class="save-button"
+        onclick="save()">
+        💾 Save &amp; Rescan
+      </button>
 
-            <div class="card-label">
-                Last Scan
-            </div>
+      <span id="msg" class="message"></span>
+    </div>
 
-            <div
-                class="card-value"
-                id="scan">
-                —
-            </div>
+    <div class="note">
+      S/R is recalculated automatically from the selected Wave timeframe.
+      Signals require multiple confirmations and minimum R:R.
+      No setup can be guaranteed profitable.
+    </div>
 
+  </section>
+
+  <!-- ======================================================
+       SCANNER
+       ====================================================== -->
+
+  <section class="panel">
+
+    <div class="panel-title">
+
+      <div>
+        <h2>📊 Live All-Perpetual Scanner</h2>
+        <div class="panel-description">
+          Live market data, indicators, confirmations and trade plans.
         </div>
-
-
-        <div class="card">
-
-            <div class="card-label">
-                Wave Timeframe
-            </div>
-
-            <div
-                class="card-value wave"
-                id="wave">
-                —
-            </div>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="card-label">
-                Tide Timeframe
-            </div>
-
-            <div
-                class="card-value tide"
-                id="tide">
-                —
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         SETTINGS
-         ===================================================== -->
-
-    <section class="panel">
-
-        <div class="panel-title">
-
-            <div>
-
-                <h2>
-                    ⚙️ Scanner Settings
-                </h2>
-
-                <div class="panel-description">
-                    Configure Wave, Tide, EMA, RSI, MACD,
-                    Stochastic, Volume, S/R and Risk settings.
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div id="settings"></div>
-
-
-        <div class="settings-actions">
-
-            <button
-                id="saveButton"
-                onclick="save()">
-
-                💾 Save &amp; Rescan
-
-            </button>
-
-            <span id="msg"></span>
-
-        </div>
-
-
-        <div class="note">
-
-            ⚠️ S/R and indicators are calculated automatically.
-            Signals are technical indications only.
-            Always use proper risk management.
-
-        </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         SCANNER
-         ===================================================== -->
-
-    <section class="panel">
-
-        <div class="panel-title">
-
-            <div>
-
-                <h2>
-                    📊 Live All-Perpetual Scanner
-                </h2>
-
-                <div class="panel-description">
-                    Real-time market data, indicators,
-                    confirmations, support/resistance and trade plans.
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- TOOLBAR -->
-
-        <div class="scanner-toolbar">
-
-
-            <div class="search-box">
-
-                <span class="search-icon">
-                    🔎
-                </span>
-
-                <input
-                    id="searchInput"
-                    type="search"
-                    autocomplete="off"
-                    placeholder="Search coin or symbol...">
-
-            </div>
-
-
-            <div class="filters">
-
-                <button
-                    id="filterAll"
-                    class="filter-btn active"
-                    onclick="setFilter('ALL')">
-
-                    ALL
-
-                </button>
-
-
-                <button
-                    id="filterBuy"
-                    class="filter-btn buy-filter"
-                    onclick="setFilter('BUY')">
-
-                    🟢 BUY
-
-                </button>
-
-
-                <button
-                    id="filterSell"
-                    class="filter-btn sell-filter"
-                    onclick="setFilter('SELL')">
-
-                    🔴 SELL
-
-                </button>
-
-
-                <button
-                    id="filterNeutral"
-                    class="filter-btn neutral-filter"
-                    onclick="setFilter('NEUTRAL')">
-
-                    ⚪ NEUTRAL
-
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- TABLE -->
-
-        <div class="table-wrap">
-
-            <table>
-
-                <thead>
-
-                    <tr>
-
-                        <th>#</th>
-                        <th>Coin</th>
-                        <th>Price</th>
-                        <th>24H</th>
-                        <th>Volume</th>
-                        <th>Vol Rank</th>
-                        <th>OI</th>
-
-                        <th>Wave</th>
-                        <th>Tide</th>
-
-                        <th>EMA 9</th>
-                        <th>EMA 20</th>
-
-                        <th>RSI</th>
-                        <th>MACD</th>
-                        <th>Stoch K/D</th>
-
-                        <th>Score</th>
-                        <th>Rank</th>
-
-                        <th>Signal</th>
-                        <th>Conf</th>
-                        <th>HA</th>
-
-                        <th>S2</th>
-                        <th>S1</th>
-                        <th>R1</th>
-                        <th>R2</th>
-
-                        <th>Entry</th>
-                        <th>SL</th>
-                        <th>TP1</th>
-                        <th>TP2</th>
-                        <th>R:R</th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody id="rows">
-
-                    <tr>
-
-                        <td
-                            colspan="28"
-                            class="loading">
-
-                            ⏳ Loading scanner...
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         FOOTER
-         ===================================================== -->
-
-    <div class="footer">
-
-        📡 Delta Cloud Scanner V4
-        • Developed by
-        <span class="footer-name">
-            Daksh Patel
-        </span>
-        • Professional Trading Dashboard
+      </div>
 
     </div>
 
+    <div class="scanner-toolbar">
+
+      <div class="search-box">
+        <span class="search-icon">🔎</span>
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Search coin...">
+      </div>
+
+      <div class="filters">
+
+        <button
+          id="filterAll"
+          class="filter-btn active"
+          onclick="setFilter('ALL')">
+          ALL
+        </button>
+
+        <button
+          id="filterBuy"
+          class="filter-btn buy-filter"
+          onclick="setFilter('BUY')">
+          🟢 BUY
+        </button>
+
+        <button
+          id="filterSell"
+          class="filter-btn sell-filter"
+          onclick="setFilter('SELL')">
+          🔴 SELL
+        </button>
+
+        <button
+          id="filterNeutral"
+          class="filter-btn neutral-filter"
+          onclick="setFilter('NEUTRAL')">
+          ⚪ NEUTRAL
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+          <tr>
+
+            <th>#</th>
+            <th>Coin</th>
+            <th>Price</th>
+            <th>24H</th>
+            <th>Volume</th>
+            <th>Vol Rank</th>
+            <th>OI</th>
+
+            <th>Wave</th>
+            <th>Tide</th>
+
+            <th>EMA 9</th>
+            <th>EMA 20</th>
+
+            <th>RSI</th>
+            <th>MACD</th>
+            <th>Stoch K/D</th>
+
+            <th>Score</th>
+            <th>Rank</th>
+
+            <th>Signal</th>
+            <th>Conf</th>
+            <th>HA</th>
+
+            <th>S2</th>
+            <th>S1</th>
+            <th>R1</th>
+            <th>R2</th>
+
+            <th>Entry</th>
+            <th>SL</th>
+            <th>TP1</th>
+            <th>TP2</th>
+            <th>R:R</th>
+
+          </tr>
+        </thead>
+
+        <tbody id="rows">
+          <tr>
+            <td colspan="28" class="loading">
+              Loading scanner...
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+  <div class="footer">
+    Delta Cloud Scanner V3 • Live market scanner • Use signals with proper risk management
+  </div>
+
 </main>
-
-
-<!-- =========================================================
-     EXISTING V4 JAVASCRIPT
-     ========================================================= -->
 
 <script src="/app.js"></script>
 

@@ -32,11 +32,8 @@ WS_URL = os.getenv(
 TG = os.getenv("TELEGRAM_BOT_TOKEN", "")
 CHAT = os.getenv("TELEGRAM_CHAT_ID", "")
 
-# Telegram alerts are OFF by default. Set TELEGRAM_ENABLED=true in Render when needed.
-TELEGRAM_ENABLED = os.getenv("TELEGRAM_ENABLED", "false").strip().lower() in {
-    "1", "true", "yes", "on"
-}
-
+# Telegram alert state. Render env is the startup/default state; the website can switch it at runtime.
+TELEGRAM_ENABLED = os.getenv("TELEGRAM_ENABLED", "false").strip().lower() in {"1", "true", "yes", "on"}
 print("Telegram alerts:", "ENABLED" if TELEGRAM_ENABLED else "DISABLED")
 
 # Telegram alert protection:
@@ -1188,7 +1185,6 @@ async def load_markets():
 async def telegram(message):
 
     if not TELEGRAM_ENABLED:
-
         return
 
     if not TG or not CHAT:
@@ -2247,9 +2243,7 @@ async def send_signal(
     result
 ):
 
-    # Telegram is optional and disabled by default.
     if not TELEGRAM_ENABLED:
-
         return False
 
     sig = result.get("signal")
@@ -3047,6 +3041,9 @@ def snapshot():
 
             "error":
                 last_error,
+
+            "telegram_enabled":
+                TELEGRAM_ENABLED,
         },
 
         "settings":
@@ -3487,6 +3484,34 @@ async def health():
 async def status():
 
     return snapshot()
+
+
+# ============================================================
+# TELEGRAM WEB CONTROL
+# ============================================================
+
+@app.get("/api/telegram")
+async def telegram_status():
+    return {"ok": True, "enabled": TELEGRAM_ENABLED, "configured": bool(TG and CHAT)}
+
+
+@app.post("/api/telegram/toggle")
+async def telegram_toggle(payload: dict):
+    global TELEGRAM_ENABLED
+    enabled = payload.get("enabled")
+    if not isinstance(enabled, bool):
+        return {"ok": False, "error": "enabled must be true or false", "enabled": TELEGRAM_ENABLED, "configured": bool(TG and CHAT)}
+    if enabled and not TG:
+        return {"ok": False, "error": "TELEGRAM_BOT_TOKEN is not configured in Render.", "enabled": TELEGRAM_ENABLED, "configured": False}
+    if enabled and not CHAT:
+        return {"ok": False, "error": "TELEGRAM_CHAT_ID is not configured in Render.", "enabled": TELEGRAM_ENABLED, "configured": False}
+    TELEGRAM_ENABLED = enabled
+    print("Telegram alerts switched:", "ENABLED" if TELEGRAM_ENABLED else "DISABLED")
+    try:
+        await broadcast(force_full=True)
+    except Exception as exc:
+        print("Telegram toggle broadcast error:", exc)
+    return {"ok": True, "enabled": TELEGRAM_ENABLED, "configured": bool(TG and CHAT)}
 
 
 # ============================================================
